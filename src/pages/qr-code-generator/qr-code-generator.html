@@ -1,0 +1,26 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>QR Code Generator</ion-title>
+    </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+    <ion-card>
+        <ion-card-content>
+            <ion-list>
+                <ion-item>Insert text to generate a QR Code</ion-item>
+                <ion-item>
+                    <ion-label floating>Insert text here</ion-label>
+                    <ion-input type="text" [(ngModel)]="qrCode.value"></ion-input>
+                </ion-item>
+                <ion-item>
+                    <button ion-button full color="primary" (click)="downloadImageClicked($event)">Download Image</button>
+                </ion-item>
+            </ion-list>                
+        </ion-card-content>
+    </ion-card>
+    <div class="flex justify-center">
+        <qr-code [value]="qrCode.value" [size]="qrCode.size" #qrCodeElement></qr-code>
+    </div>
+</ion-content>

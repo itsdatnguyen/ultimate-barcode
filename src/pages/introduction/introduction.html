@@ -1,0 +1,35 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>Welcome</ion-title>
+        <ion-buttons end>
+            <button ion-button (click)="exitIntroduction()">
+                Skip
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-slides pager>
+        <ion-slide>
+            <ion-card>
+                <ion-card-header></ion-card-header>
+                <ion-card-content></ion-card-content>
+            </ion-card>
+        </ion-slide>
+        <ion-slide>
+            <ion-card>
+                <ion-card-header></ion-card-header>
+                <ion-card-content></ion-card-content>
+            </ion-card>
+        </ion-slide>
+        <ion-slide>
+            <ion-card>
+                <ion-card-header></ion-card-header>
+                <ion-card-content>
+                    <button ion-button full (click)="exitIntroduction()">Ready to go?</button>
+                </ion-card-content>
+            </ion-card>
+        </ion-slide>
+    </ion-slides>
+</ion-content>
