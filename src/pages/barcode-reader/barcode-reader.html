@@ -1,9 +1,15 @@
 <ion-header>
-  <ion-navbar color="primary">
-    <ion-title>Barcode Reader</ion-title>
-  </ion-navbar>
+    <ion-navbar color="primary">
+        <ion-title>Barcode Reader</ion-title>
+        <ion-buttons end>
+            <button ion-button (click)="onBeginScan(event)">
+                <ion-icon padding class="large-icon" name="qr-scanner"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-
-</ion-content>
+<ion-tabs>
+    <ion-tab tabIcon="barcode" tabTitle="Barcode" [root]="barcodeHistoryRoot"></ion-tab>
+    <ion-tab tabIcon="qr-scanner" tabTitle="Qr Code" [root]="qrCodeHistoryRoot"></ion-tab>
+</ion-tabs>

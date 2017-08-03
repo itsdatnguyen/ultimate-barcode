@@ -7,7 +7,11 @@ import { production } from '../app/environment';
 
 @Injectable()
 export class SQLStorageService {
-    public SQLiteObject: SQLiteObject = null;
+    private _SQLiteObject: SQLiteObject = null;
+
+    get SQLiteObject(): SQLiteObject {
+        return this._SQLiteObject;
+    }
 
     constructor(
         private storage: Storage,
@@ -86,7 +90,7 @@ export class SQLStorageService {
              name: 'data.db',
              location: 'default'
         }).then((db: SQLiteObject) => {
-            this.SQLiteObject = db;
+            this._SQLiteObject = db;
             return this.SQLiteObject.executeSql('CREATE TABLE IF NOT EXISTS kv (key text primary key, value text)', []);
         
         }).catch((error) => {

@@ -1,6 +1,11 @@
+import { QrCodeHistoryPage } from './../qr-code-history/qr-code-history';
+import { BarcodeHistoryPage } from './../barcode-history/barcode-history';
+import { BarcodeReaderService, CodeEntry } from './barcode-reader.service';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+
 import { BarcodeScanner, BarcodeScanResult } from "@ionic-native/barcode-scanner";
+import { BrowserTab } from "@ionic-native/browser-tab";
 
 @IonicPage()
 @Component({
@@ -9,18 +14,25 @@ import { BarcodeScanner, BarcodeScanResult } from "@ionic-native/barcode-scanner
 })
 export class BarcodeReaderPage {
 
-    constructor(public navCtrl: NavController, public navParams: NavParams,
+    barcodeHistoryRoot = BarcodeHistoryPage;
+    qrCodeHistoryRoot = QrCodeHistoryPage;
+
+    constructor(
+        public navCtrl: NavController, 
+        public navParams: NavParams,
         private barcodeScanner: BarcodeScanner,
-        private alertController: AlertController) {
+        private alertController: AlertController,
+        private browserTab: BrowserTab,
+        private barcodeReaderService: BarcodeReaderService) {
         
     }
 
-    ionViewDidLoad() {
+    onBeginScan($event) {
         this.beginScan();
     }
 
-    beginScan(): void {
-        this.barcodeScanner.scan({
+    beginScan(): Promise<any> {
+        return this.barcodeScanner.scan({
             showTorchButton: true,
             showFlipCameraButton: true,
             resultDisplayDuration: 0
@@ -36,7 +48,6 @@ export class BarcodeReaderPage {
     handleScan(result: BarcodeScanResult): void {
         if (!result.cancelled) {
             switch (result.format) {
-
                 case 'QR_CODE':
                     this.handleQRCode(result);
                     break;
@@ -44,9 +55,37 @@ export class BarcodeReaderPage {
                 default:
                     this.handleUPCCode(result);
             }
-        } else {
-            this.navCtrl.pop();
-        }
+        }   
+    }
+
+    handleUPCCode(result: BarcodeScanResult): void {
+        let confirmationAlert = this.alertController.create({
+            title: 'UPC Found',
+            message: `${result.text} was found. Would you like to search that result?`,
+            buttons: [
+                {
+                    text: 'Cancel',
+                    role: 'cancel',
+                    handler: () => {
+                        
+                    }
+                },
+                {
+                    text: 'Search',
+                    role: 'search',
+                    handler: () => {
+                        this.openUrl(`http://www.upcindex.com/${result.text}`);
+                    }
+                }
+            ]
+        });    
+
+        confirmationAlert.present();
+
+        this.barcodeReaderService.storeBarcode({
+            code: result.text,
+            date: Date.now()
+        });
     }
 
     handleQRCode(result: BarcodeScanResult): void {
@@ -66,15 +105,12 @@ export class BarcodeReaderPage {
                         text: 'Open Link',
                         role: 'open',
                         handler: () => {
-                            window.open(result.text, '_system');                        
+                            this.openUrl(result.text);                                            
                         },
                         
                     }
                 ]
             });
-            confirmationAlert.didLeave.subscribe((value) => {
-                this.beginScan();
-            })
 
             confirmationAlert.present();
 
@@ -84,45 +120,33 @@ export class BarcodeReaderPage {
                 message: result.text
             });
 
-            textAlert.didLeave.subscribe((value) => {
-                this.beginScan();
-            })
-
             textAlert.present();
-        }      
+        }     
+        
+        this.barcodeReaderService.storeQrCode({
+            code: result.text,
+            date: Date.now()
+        });
     }
 
-    handleUPCCode(result: BarcodeScanResult): void {
-        let confirmationAlert = this.alertController.create({
-            title: 'UPC Found',
-            message: `${result.text} was found. Would you like to search that result?`,
-            buttons: [
-                {
-                    text: 'Cancel',
-                    role: 'cancel',
-                    handler: () => {
-
-                    }
-                },
-                {
-                    text: 'Search',
-                    role: 'search',
-                    handler: () => {
-                        window.open(`http://www.upcindex.com/${result.text}`, '_system');
-                    }
-                }
-            ]
-        });    
-
-        confirmationAlert.didLeave.subscribe((value) => {
-            this.beginScan();
-        });
-
-        confirmationAlert.present();   
+    /**
+     * Try to open the url using the native browser tab. If unsuccessful, then open using the default browser
+     * @param url The url string to go to
+     */
+    openUrl(url: string): Promise<any> {
+        return this.browserTab.isAvailable().then((isAvailable: boolean) => {
+            if (isAvailable) {
+                this.browserTab.openUrl(url);
+            } else {
+                window.open(url, '_system');
+            }
+        })
+        .catch((rejected) => {
+            console.error(`Error could not use native browser tab: ${rejected}`);
+        })
     }
 
     isValidUrl(url: string): boolean {
         return /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/.test(url);
     }
-
 }
