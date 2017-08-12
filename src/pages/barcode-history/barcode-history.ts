@@ -1,6 +1,7 @@
-import { BarcodeReaderService } from './../barcode-reader/barcode-reader.service';
+import { BarcodeDetailPage } from './../barcode-detail/barcode-detail';
+import { BarcodeReaderService, CodeEntry } from './../barcode-reader/barcode-reader.service';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -9,12 +10,13 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class BarcodeHistoryPage {
 
-    barcodes = [];
+    barcodes: CodeEntry[] = [];
 
     constructor(
         public navCtrl: NavController, 
         public navParams: NavParams,
-        private barcodeReaderService: BarcodeReaderService) {
+        public modalController: ModalController,
+        private barcodeReaderService: BarcodeReaderService,) {
     }
 
     ionViewDidLoad() {
@@ -38,5 +40,11 @@ export class BarcodeHistoryPage {
         }
 
         this.barcodes = codes;
+    }
+
+    onRowTapped(code: CodeEntry) {
+        let detailModal = this.modalController.create(BarcodeDetailPage, code);
+
+        detailModal.present();
     }
 }

@@ -59,4 +59,8 @@
         let newYear = Number.parseInt(time.substr(0, 4)) + years;
         return newYear.toString() + time.substr(4, 20);
     }
+
+    export function isValidUrl(url: string): boolean {
+        return /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/.test(url);
+    }
 }

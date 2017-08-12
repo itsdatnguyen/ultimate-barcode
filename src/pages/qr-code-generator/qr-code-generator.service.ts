@@ -10,7 +10,7 @@ export class QRCodeGeneratorService {
 
     }
 
-    getRememberedQRCodeInput(): Promise<string> {
+    getRememberedQRCodeInput(): Promise<any> {
         return this.sqlStorageService.get(this.QR_CODE_GENERATOR_INPUT_KEY);
     }
 

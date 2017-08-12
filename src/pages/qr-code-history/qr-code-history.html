@@ -13,7 +13,7 @@
     </ion-row>
     <ion-list [virtualScroll]="qrCodes"
         [approxItemHeight]="'132px'">
-        <ion-item *virtualItem="let code">  
+        <ion-item *virtualItem="let code" (tap)="onRowClicked(code)">  
             <ion-row>
                 <ion-col col-8 class="row-scroll-x">
                     <p>{{ code.code }}</p>

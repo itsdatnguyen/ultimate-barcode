@@ -1,5 +1,4 @@
 import { Storage } from "@ionic/storage";
-import { ToastController } from "ionic-angular";
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 
@@ -65,7 +64,7 @@ export class SQLStorageService {
         }
     }
 
-    set(key: string, value: string) {
+    set(key: string, value: any) {
         if (this.SQLiteObject) {
             return this.SQLiteObject.executeSql('insert or replace into kv(key, value) values (?, ?)', [key, value]).then(data => {
                 if (data.rows.length > 0) {                

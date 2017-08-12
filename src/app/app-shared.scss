@@ -13,3 +13,9 @@
 .row-scroll-x {
     overflow-x: auto; 
 }
+
+.large-textarea {
+    textarea {
+        height: 150px;
+    }
+}

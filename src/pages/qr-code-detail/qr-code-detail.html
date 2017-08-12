@@ -1,0 +1,27 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-buttons start>
+            <button ion-button (click)="close()">Close</button>
+        </ion-buttons>
+        <ion-title>Qr Code Details</ion-title>
+        <ion-buttons end *ngIf="qrCodeModel !== null">
+            <button ion-button *ngIf="isValidUrl(qrCodeModel.code)" (click)="goToUrlClicked($event)">
+                <ion-icon class="large-icon" name="browsers"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-card>
+        <ion-card-header>
+            <h1>Qr Code</h1>
+        </ion-card-header>
+        <ion-card-content *ngIf="qrCodeModel !== null">
+            <h2>Content</h2>
+            <p (press)="codePressed($event)">{{ qrCodeModel.code }}</p>
+            <h2>Date</h2>
+            <p>{{ qrCodeModel.date | date }}
+        </ion-card-content>
+    </ion-card>
+</ion-content>

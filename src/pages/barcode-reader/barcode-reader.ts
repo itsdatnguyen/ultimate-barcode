@@ -1,11 +1,15 @@
+import { AppRate } from '@ionic-native/app-rate';
+import { StatisticsService } from './../../shared/statistics.service';
 import { QrCodeHistoryPage } from './../qr-code-history/qr-code-history';
 import { BarcodeHistoryPage } from './../barcode-history/barcode-history';
-import { BarcodeReaderService, CodeEntry } from './barcode-reader.service';
+import { BarcodeReaderService } from './barcode-reader.service';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 
 import { BarcodeScanner, BarcodeScanResult } from "@ionic-native/barcode-scanner";
 import { BrowserTab } from "@ionic-native/browser-tab";
+
+import { Utility } from "../../shared/utility";
 
 @IonicPage()
 @Component({
@@ -23,8 +27,25 @@ export class BarcodeReaderPage {
         private barcodeScanner: BarcodeScanner,
         private alertController: AlertController,
         private browserTab: BrowserTab,
-        private barcodeReaderService: BarcodeReaderService) {
+        private barcodeReaderService: BarcodeReaderService,
+        private statisticsService: StatisticsService,
+        private appRate: AppRate) {
         
+    }
+
+    ionViewWillLeave() {
+        this.statisticsService.hasRatedApp.then((rated) => {
+            if (rated == null) {
+                this.statisticsService.numberOfScans.then((scans) => {
+                    if (scans > 2) {
+                        this.appRate.promptForRating(true);
+                        this.appRate.preferences.callbacks.onButtonClicked = () => {
+                            this.statisticsService.userSuccessfullyRatedApp();
+                        }
+                    }
+                });
+            }
+        });
     }
 
     onBeginScan($event) {
@@ -39,6 +60,8 @@ export class BarcodeReaderPage {
             
         }).then((data: BarcodeScanResult) => {
             this.handleScan(data);
+            this.statisticsService.incrementNumberOfScans();
+
         })
         .catch((rejected) => {
             console.error(`Error loading barcode scanner: ${rejected}`);
@@ -89,7 +112,7 @@ export class BarcodeReaderPage {
     }
 
     handleQRCode(result: BarcodeScanResult): void {
-        if (this.isValidUrl(result.text)) {
+        if (Utility.isValidUrl(result.text)) {
             let confirmationAlert = this.alertController.create({
                 title: 'Url Link',
                 message: `Would you like to open the link ${result.text}?`,
@@ -144,9 +167,5 @@ export class BarcodeReaderPage {
         .catch((rejected) => {
             console.error(`Error could not use native browser tab: ${rejected}`);
         })
-    }
-
-    isValidUrl(url: string): boolean {
-        return /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/.test(url);
     }
 }

@@ -52,9 +52,7 @@ export class MyApp {
                     this.seenIntroduction();
                 });
         });
-
-
-        
+        this.showAdBanner();
     }
 
     showAdBanner(): void {
@@ -75,7 +73,7 @@ export class MyApp {
 
     seenIntroduction(): Promise<any> {
         return this.introductionService.hasSeenIntroduction().then((introduction) => {
-            if (introduction) {
+            if (introduction != null) {
                 this.rootPage = HomePage;
             } else {
                 this.rootPage = IntroductionPage;

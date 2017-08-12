@@ -1,8 +1,10 @@
+import { CodeGeneratorOptionsPage, CodeGeneratorInfo, CodeGeneratorOption } from './../code-generator-options/code-generator-options';
 import { ToastController } from 'ionic-angular';
 import { QRCodeGeneratorService } from './qr-code-generator.service';
 import { Component, HostListener, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, PopoverController } from 'ionic-angular';
 
+import { SocialSharing } from '@ionic-native/social-sharing';
 import { Base64ToGallery } from '@ionic-native/base64-to-gallery';
 
 import { Utility } from "../../shared/utility";
@@ -27,8 +29,10 @@ export class QrCodeGeneratorPage {
         public navCtrl: NavController, 
         public navParams: NavParams,
         private toastController: ToastController,
+        private popoverController: PopoverController,
         private qrService: QRCodeGeneratorService,
-        private base64ToGallery: Base64ToGallery) {
+        private base64ToGallery: Base64ToGallery,
+        private social: SocialSharing) {
     }
 
     @HostListener('window:resize', ['$event'])
@@ -37,7 +41,7 @@ export class QrCodeGeneratorPage {
     }
 
     ionViewDidLoad() {
-        this.qrService.getRememberedQRCodeInput().then((result: string) => {
+        this.qrService.getRememberedQRCodeInput().then((result) => {
             this.qrCode.value = result;
         });
         this.setQRCodeSize(window.innerWidth / 1.5);   
@@ -49,21 +53,40 @@ export class QrCodeGeneratorPage {
         }
     }
 
-    downloadImageClicked($event) {
-        this.saveQRCodeAsImage().then((fileName) => {
-            let fileCreatedToast = this.toastController.create({
-                message: `Saved image ${fileName}`,
-                duration: 3000,
-                showCloseButton: true
-            });
+    shareClicked($event) {
+        let imageElement = this.getImageElement();
+        this.social.share('Hello there!', 'This is my Qr Code.', imageElement.src);
+    }
 
-            fileCreatedToast.present();
+    moreClicked($event: UIEvent) {
+        let morePopover = this.popoverController.create(CodeGeneratorOptionsPage);
+        morePopover.present({
+            ev: $event
+        });
+        
+        morePopover.onWillDismiss((data: CodeGeneratorInfo, role: string) => {
+            if(data != null) {
+                switch(data.option) {
+                    case CodeGeneratorOption.Download:
+                        this.saveQRCodeAsImage().then((fileName) => {
+                        let fileCreatedToast = this.toastController.create({
+                            message: `Saved image ${fileName}`,
+                            duration: 3000,
+                            showCloseButton: true
+                            
+                        });
+
+                        fileCreatedToast.present();
+                    });
+                    break;
+                }       
+            }
         });
     }
 
     saveQRCodeAsImage(): Promise<any> {
         // get image element
-        let imageElement = this.qrCodeElement.elementRef.nativeElement.children[0];
+        let imageElement = this.getImageElement();
 
         return this.base64ToGallery.base64ToGallery(imageElement.src, {
             prefix: 'QRCode_'
@@ -75,6 +98,10 @@ export class QrCodeGeneratorPage {
 
     setQRCodeSize(size: number): void {
         this.qrCode.size = Utility.clamp(size, 0, 500);
+    }
+
+    getImageElement(): any {
+        return this.qrCodeElement.elementRef.nativeElement.children[0];
     }
 
 }
