@@ -1,5 +1,5 @@
+import { BrowserService } from './../../shared/browser.service';
 import { Clipboard } from '@ionic-native/clipboard';
-import { BrowserTab } from '@ionic-native/browser-tab';
 import { CodeEntry } from './../barcode-reader/barcode-reader.service';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, ViewController } from 'ionic-angular';
@@ -18,7 +18,7 @@ export class BarcodeDetailPage {
         public navCtrl: NavController, 
         public navParams: NavParams,
         private viewController: ViewController,
-        private browser: BrowserTab,
+        private browser: BrowserService,
         private alertController: AlertController,
         private clipboard: Clipboard,
         private toastController: ToastController) {
@@ -33,13 +33,7 @@ export class BarcodeDetailPage {
     }
 
     lookUpBarcodeClicked($event) {
-        this.browser.isAvailable().then((available: boolean) => {
-            if (available) {
-                this.browser.openUrl(`http://www.upcindex.com/${this.barcodeModel.code}`);
-            } else {
-                window.open(`http://www.upcindex.com/${this.barcodeModel.code}`, '_system');
-            }
-        })
+        this.browser.openInBrowser(`http://www.upcindex.com/${this.barcodeModel.code}`);
     }
 
     isValidUrl(url: string) {

@@ -3,10 +3,15 @@
         <ion-buttons start>
             <button ion-button (click)="close()">Close</button>
         </ion-buttons>
-        <ion-title>Qr Code Details</ion-title>
-        <ion-buttons end *ngIf="qrCodeModel !== null">
-            <button ion-button *ngIf="isValidUrl(qrCodeModel.code)" (click)="goToUrlClicked($event)">
-                <ion-icon class="large-icon" name="browsers"></ion-icon>
+        <ion-title>Qr Code Detail</ion-title>
+        <ion-buttons end>
+            <button ion-button (click)="shareClicked($event)">
+                <ion-icon padding class="large-icon" name="share"></ion-icon>
+            </button>
+        </ion-buttons>
+        <ion-buttons right>
+            <button ion-button (click)="moreClicked($event)">
+                <ion-icon class="large-icon" name="more"></ion-icon>
             </button>
         </ion-buttons>
     </ion-navbar>
@@ -14,14 +19,21 @@
 
 <ion-content padding>
     <ion-card>
-        <ion-card-header>
+        <ion-card-header class="card-title">
             <h1>Qr Code</h1>
         </ion-card-header>
         <ion-card-content *ngIf="qrCodeModel !== null">
-            <h2>Content</h2>
-            <p (press)="codePressed($event)">{{ qrCodeModel.code }}</p>
-            <h2>Date</h2>
-            <p>{{ qrCodeModel.date | date }}
+            <div padding-bottom (press)="codePressed($event)">
+                <h2 class="card-subtitle">Data</h2>
+                <p class="card-content">{{ qrCodeModel.code }}</p>
+            </div>
+            <div padding-bottom>
+                <h2 class="card-subtitle">Date</h2>
+                <p class="card-content">{{ qrCodeModel.date | date }}
+            </div>  
         </ion-card-content>
     </ion-card>
+    <div class="flex justify-center" *ngIf="qrCodeModel != null">
+        <qr-code [value]="qrCodeModel.code" #qrCodeElement></qr-code>
+    </div>
 </ion-content>

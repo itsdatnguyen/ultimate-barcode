@@ -1,3 +1,4 @@
+import { BarcodeGeneratorPage } from './../pages/barcode-generator/barcode-generator';
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 
@@ -33,9 +34,10 @@ export class MyApp {
 
         // used for an example of ngFor and navigation
         this.pages = [
-        { title: 'Home', component: HomePage },
-        { title: 'Barcode Reader', component: BarcodeReaderPage },
-        { title: 'QR Generator', component: QrCodeGeneratorPage }
+            { title: 'Home', component: HomePage },
+            { title: 'Barcode Reader', component: BarcodeReaderPage },
+            { title: 'QR Generator', component: QrCodeGeneratorPage },
+            { title: 'Barcode Generator', component: BarcodeGeneratorPage },
         ];
     }
 

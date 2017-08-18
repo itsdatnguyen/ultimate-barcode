@@ -15,13 +15,17 @@
 <ion-content padding>
     <ion-card>
         <ion-card-header>
-            <h1>Barcode</h1>
+            <h1 class="card-title">Barcode</h1>
         </ion-card-header>
         <ion-card-content *ngIf="barcodeModel !== null">
-            <h2>Content</h2>
-            <p (press)="codePressed($event)">{{ barcodeModel.code }}</p>
-            <h2>Date</h2>
-            <p>{{ barcodeModel.date | date }}
+            <div padding-bottom (press)="codePressed($event)">
+                <h2 class="card-subtitle">Content</h2>
+                <p class="card-content">{{ barcodeModel.code }}</p>
+            </div>
+            <div padding-bottom>
+                <h2 class="card-subtitle">Date</h2>
+                <p class="card-content">{{ barcodeModel.date | date }}
+            </div>
         </ion-card-content>
     </ion-card>
 </ion-content>

@@ -1,11 +1,13 @@
+import { BarcodeDetailOptionsPageModule } from './../pages/barcode-detail-options/barcode-detail-options.module';
+import { BarcodeGeneratorPageModule } from './../pages/barcode-generator/barcode-generator.module';
+import { QrCodeDetailOptionsPageModule } from './../pages/qr-code-detail-options/qr-code-detail-options.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { DatePipe } from "@angular/common";
-import { IonicApp, IonicErrorHandler, IonicModule, Tabs } from 'ionic-angular';
+import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
 import { IonicNativePluginModule } from "./ionic-native-plugin.module";
 
-import { CodeGeneratorOptionsPageModule } from './../pages/code-generator-options/code-generator-options.module';
 import { BarcodeDetailPageModule } from './../pages/barcode-detail/barcode-detail.module';
 import { QrCodeDetailPageModule } from './../pages/qr-code-detail/qr-code-detail.module';
 import { QrCodeHistoryPageModule } from './../pages/qr-code-history/qr-code-history.module';
@@ -18,7 +20,7 @@ import { BarcodeReaderService } from './../pages/barcode-reader/barcode-reader.s
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import { IntroductionService, SQLStorageService, UserSettingsService, StatisticsService } from "../shared/index";
+import { IntroductionService, SQLStorageService, UserSettingsService, StatisticsService, BrowserService } from "../shared/index";
 import { HomePageModule } from "../pages/home/home.module";
 
 
@@ -26,12 +28,14 @@ export const AppPages = [
     HomePageModule,
     IntroductionPageModule,
     BarcodeReaderPageModule,
-    QrCodeGeneratorPageModule,
     BarcodeHistoryPageModule,
+    BarcodeDetailPageModule,
+    BarcodeGeneratorPageModule,
+    BarcodeDetailOptionsPageModule,
     QrCodeHistoryPageModule,
     QrCodeDetailPageModule,
-    BarcodeDetailPageModule,
-    CodeGeneratorOptionsPageModule
+    QrCodeDetailOptionsPageModule,
+    QrCodeGeneratorPageModule,
 ];
 
 @NgModule({
@@ -42,7 +46,7 @@ export const AppPages = [
         BrowserModule,
         AppPages,
         IonicModule.forRoot(MyApp),
-        IonicNativePluginModule,
+        IonicNativePluginModule,        
     ],
     bootstrap: [IonicApp],
     exports: [
@@ -58,6 +62,7 @@ export const AppPages = [
         UserSettingsService,
         StatisticsService,
         BarcodeReaderService,
+        BrowserService,
         DatePipe,
     ]
 })

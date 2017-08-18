@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
+import { QRCodeModule } from 'angular2-qrcode';
+
 import { QrCodeDetailPage } from './qr-code-detail';
 
 @NgModule({
@@ -8,6 +10,7 @@ import { QrCodeDetailPage } from './qr-code-detail';
     ],
     imports: [
         IonicPageModule.forChild(QrCodeDetailPage),
+        QRCodeModule
     ],
     entryComponents: [
         QrCodeDetailPage,

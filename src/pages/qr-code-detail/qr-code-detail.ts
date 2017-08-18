@@ -1,8 +1,11 @@
-import { ToastController } from 'ionic-angular';
+import { QRCodeGeneratorService } from './../qr-code-generator/qr-code-generator.service';
+import { BrowserService } from './../../shared/browser.service';
+import { QrCodeDetailOptionsPage, QrCodeDetailOptionsInfo, QrCodeDetailOption } from './../qr-code-detail-options/qr-code-detail-options';
+import { SocialSharing } from '@ionic-native/social-sharing';
+import { ToastController, PopoverController } from 'ionic-angular';
 import { CodeEntry } from './../barcode-reader/barcode-reader.service';
 import { Clipboard } from '@ionic-native/clipboard';
-import { BrowserTab } from '@ionic-native/browser-tab';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, ViewController } from 'ionic-angular';
 import { Utility } from "../../shared/utility";
 
@@ -13,16 +16,22 @@ import { Utility } from "../../shared/utility";
 })
 export class QrCodeDetailPage {
 
+    @ViewChild('qrCodeElement') qrCodeElement;
+
     qrCodeModel: CodeEntry = null;
 
     constructor(
         public navCtrl: NavController, 
         public navParams: NavParams,
+        private qrCodeGeneratorService: QRCodeGeneratorService,
         private viewController: ViewController,
-        private browser: BrowserTab,
+        private toastController: ToastController,
         private alertController: AlertController,
+        private popoverController: PopoverController,
+        private social: SocialSharing,
+        private browser: BrowserService,
         private clipboard: Clipboard,
-        private toastController: ToastController) {
+        ) {
     }
 
     ionViewDidLoad() {
@@ -33,18 +42,36 @@ export class QrCodeDetailPage {
         this.viewController.dismiss();
     }
 
-    goToUrlClicked($event) {
-        this.browser.isAvailable().then((available: boolean) => {
-            if (available) {
-                this.browser.openUrl(this.qrCodeModel.code);
-            } else {
-                window.open(this.qrCodeModel.code, '_system');
-            }
-        })
+    shareClicked($event) {
+        this.social.share(this.qrCodeModel.code, 'My Qr Code!', this.getQrImage().src);
     }
 
-    isValidUrl(url: string) {
-        return Utility.isValidUrl(url);
+    moreClicked($event) {
+        let morePopover = this.popoverController.create(QrCodeDetailOptionsPage, {
+            code: this.qrCodeModel.code
+        });
+
+        morePopover.onDidDismiss((data: QrCodeDetailOptionsInfo, role: string) => {
+            if (data != null) {
+                switch (data.option) {
+                    case QrCodeDetailOption.Download:
+                        this.saveQRCodeAsImage();
+                        break;
+
+                    case QrCodeDetailOption.OpenUrl:
+                        this.browser.openInBrowser(this.qrCodeModel.code);
+                        break;
+
+                    case QrCodeDetailOption.Search:
+                        this.browser.openGoogleSearch(this.qrCodeModel.code);
+                        break;
+                }
+            }
+        });
+
+        morePopover.present({
+            ev: $event
+        });
     }
 
     codePressed($event) {
@@ -72,5 +99,14 @@ export class QrCodeDetailPage {
         });
 
         copyAlert.present();
+    }
+
+    saveQRCodeAsImage(): Promise<any> {
+        let imageElement = this.getQrImage();
+        return this.qrCodeGeneratorService.saveQRCodeAsImage(imageElement.src);
+    }
+
+    getQrImage(): any {
+        return this.qrCodeElement.elementRef.nativeElement.children[0];
     }
 }

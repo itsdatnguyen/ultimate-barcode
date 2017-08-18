@@ -1,3 +1,4 @@
+import { BrowserService } from './../../shared/browser.service';
 import { AppRate } from '@ionic-native/app-rate';
 import { StatisticsService } from './../../shared/statistics.service';
 import { QrCodeHistoryPage } from './../qr-code-history/qr-code-history';
@@ -7,7 +8,6 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 
 import { BarcodeScanner, BarcodeScanResult } from "@ionic-native/barcode-scanner";
-import { BrowserTab } from "@ionic-native/browser-tab";
 
 import { Utility } from "../../shared/utility";
 
@@ -26,7 +26,7 @@ export class BarcodeReaderPage {
         public navParams: NavParams,
         private barcodeScanner: BarcodeScanner,
         private alertController: AlertController,
-        private browserTab: BrowserTab,
+        private browser: BrowserService,
         private barcodeReaderService: BarcodeReaderService,
         private statisticsService: StatisticsService,
         private appRate: AppRate) {
@@ -97,7 +97,7 @@ export class BarcodeReaderPage {
                     text: 'Search',
                     role: 'search',
                     handler: () => {
-                        this.openUrl(`http://www.upcindex.com/${result.text}`);
+                        this.browser.openInBrowser(`http://www.upcindex.com/${result.text}`);
                     }
                 }
             ]
@@ -128,7 +128,7 @@ export class BarcodeReaderPage {
                         text: 'Open Link',
                         role: 'open',
                         handler: () => {
-                            this.openUrl(result.text);                                            
+                            this.browser.openInBrowser(result.text);                                           
                         },
                         
                     }
@@ -152,20 +152,4 @@ export class BarcodeReaderPage {
         });
     }
 
-    /**
-     * Try to open the url using the native browser tab. If unsuccessful, then open using the default browser
-     * @param url The url string to go to
-     */
-    openUrl(url: string): Promise<any> {
-        return this.browserTab.isAvailable().then((isAvailable: boolean) => {
-            if (isAvailable) {
-                this.browserTab.openUrl(url);
-            } else {
-                window.open(url, '_system');
-            }
-        })
-        .catch((rejected) => {
-            console.error(`Error could not use native browser tab: ${rejected}`);
-        })
-    }
 }

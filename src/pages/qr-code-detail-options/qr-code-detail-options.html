@@ -2,7 +2,7 @@
     <ion-list>
         <button ion-item *ngFor="let option of options" (click)="optionClicked($event, option)">
             <ion-icon item-start [name]="option.icon"></ion-icon>
-            <ion-label>{{ option.name }}</ion-label>
+            <ion-label>{{ option.displayName }}</ion-label>
         </button>
     </ion-list>
 </ion-content>

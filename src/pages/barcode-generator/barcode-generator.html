@@ -1,0 +1,31 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>Barcode Generator</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <div class="flex justify-center">
+        <ngx-barcode [bc-value]="barcode.code" 
+            [bc-display-value]="true"
+            [bc-element-type]="barcode.elementType"
+            [bc-format]="barcode.format"></ngx-barcode>
+    </div>
+    <ion-card>
+        <ion-card-header>
+            Options
+        </ion-card-header>
+        <ion-card-content>
+            <ion-grid>
+                <ion-row>
+                    <ion-col col-sm-6 col-md-4 col-lg-3>
+                        <ion-item>
+                            <ion-label color="primary" floating>Input</ion-label>
+                            <ion-input type="text" [(ngModel)]="barcode.code"></ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-card-content>
+    </ion-card>
+</ion-content>
