@@ -1,3 +1,4 @@
+import { AdService } from './../../shared/ad.service';
 import { ColorPickerPage, ColorPickerParams, ColorPickerAction } from './../color-picker/color-picker';
 import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, PopoverController } from 'ionic-angular';
@@ -41,12 +42,16 @@ export class BarcodeGeneratorPage {
         private popoverController: PopoverController,
         private barcodeSaverService: BarcodeSaverService,
         private browser: BrowserService,
+        private adService: AdService,
     ) {
         
     }
 
     shareClicked($event) {
-        this.social.share(this.barcode.code, 'My Barcode', this.getBarcodeImageSrc());
+        this.social.share(this.barcode.code, 'My Barcode', this.getBarcodeImageSrc())
+        .then(() => {
+            this.adService.showInterstitialBanner()
+        });
     }
 
     moreClicked($event) {

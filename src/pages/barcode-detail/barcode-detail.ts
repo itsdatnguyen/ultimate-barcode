@@ -1,3 +1,4 @@
+import { AdService } from './../../shared/ad.service';
 import { BarcodeSaverService } from './../../shared/barcode-saver.service';
 import { Base64ToGallery } from '@ionic-native/base64-to-gallery';
 import { BarcodeDetailOptionsPage, BarcodeDetailOptions } from './../barcode-detail-options/barcode-detail-options';
@@ -30,6 +31,7 @@ export class BarcodeDetailPage {
         private popoverController: PopoverController,
         private clipboard: Clipboard,
         private social: SocialSharing,
+        private adService: AdService,
     ) {
     }
 
@@ -42,7 +44,10 @@ export class BarcodeDetailPage {
     }
 
     shareClicked($event) {
-        this.social.share(this.barcode.code, 'My Qr Code!', this.getBarcodeImageSrc());
+        this.social.share(this.barcode.code, 'My Barcode', this.getBarcodeImageSrc())
+        .then((value) => {
+            this.adService.showInterstitialBanner();
+        })
     } 
 
     moreClicked($event) {

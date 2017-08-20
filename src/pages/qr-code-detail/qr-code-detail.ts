@@ -1,3 +1,4 @@
+import { AdService } from './../../shared/ad.service';
 import { QRCodeGeneratorService } from './../qr-code-generator/qr-code-generator.service';
 import { BrowserService } from './../../shared/browser.service';
 import { QrCodeDetailOptionsPage, QrCodeDetailOption } from './../qr-code-detail-options/qr-code-detail-options';
@@ -30,6 +31,7 @@ export class QrCodeDetailPage {
         private social: SocialSharing,
         private browser: BrowserService,
         private clipboard: Clipboard,
+        private adService: AdService,
         ) {
     }
 
@@ -42,7 +44,10 @@ export class QrCodeDetailPage {
     }
 
     shareClicked($event) {
-        this.social.share(this.qrCode.code, 'My Qr Code!', this.getQrImage().src);
+        this.social.share(this.qrCode.code, 'My Qr Code!', this.getQrImage().src)
+        .then(() => {
+            this.adService.showInterstitialBanner()
+        });
     }
 
     moreClicked($event) {

@@ -1,3 +1,4 @@
+import { AdService } from './../../shared/ad.service';
 import { BrowserService } from './../../shared/browser.service';
 import { QrCodeDetailOptionsPage, QrCodeDetailOption } from './../qr-code-detail-options/qr-code-detail-options';
 import { QRCodeGeneratorService } from './qr-code-generator.service';
@@ -30,7 +31,9 @@ export class QrCodeGeneratorPage {
         private qrService: QRCodeGeneratorService,
         private browser: BrowserService,
         private popoverController: PopoverController,
-        private social: SocialSharing) {
+        private social: SocialSharing,
+        private adService: AdService,
+    ) {
     }
 
     @HostListener('window:resize', ['$event'])
@@ -53,7 +56,10 @@ export class QrCodeGeneratorPage {
 
     shareClicked($event) {
         let imageElement = this.getQrImage();
-        this.social.share('Hello there!', 'This is my Qr Code.', imageElement.src);
+        this.social.share('Hello there!', 'This is my Qr Code.', imageElement.src)
+        .then(() => {
+            this.adService.showInterstitialBanner()
+        });
     }
 
     moreClicked($event: UIEvent) {

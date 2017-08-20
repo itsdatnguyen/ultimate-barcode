@@ -50,12 +50,6 @@ export class MyApp {
             this.splashScreen.hide();
             
             this.adService.showAdBanner();
-
-            this.platform.registerBackButtonAction(() => {
-                if (this.nav.length() === 1) {
-                    this.adService.showInterstitialBanner();
-                }
-            });
             
             this.sqlStorageService.initializeDatabase()
             .then((value) => {
