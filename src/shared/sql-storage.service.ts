@@ -2,8 +2,6 @@ import { Storage } from "@ionic/storage";
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 
-import { production } from '../app/environment';
-
 @Injectable()
 export class SQLStorageService {
     private _SQLiteObject: SQLiteObject = null;

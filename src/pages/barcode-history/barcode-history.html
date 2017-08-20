@@ -11,6 +11,7 @@
             <h2>Date</h2>
         </ion-row>
     </ion-row>
+    <p text-center *ngIf="barcodes.length === 0">No Barcodes found</p>
     <ion-list [virtualScroll]="barcodes"
         [approxItemHeight]="'132px'">
         <ion-item *virtualItem="let code" (tap)="onRowTapped(code)">  

@@ -1,4 +1,3 @@
-import { BarcodeGeneratorPage } from './../pages/barcode-generator/barcode-generator';
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 
@@ -6,10 +5,11 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { AdMobFree, AdMobFreeBannerConfig } from '@ionic-native/admob-free';
 
+import { IntroductionService, SQLStorageService, AppReadyService, AdService } from "../shared";
+
+import { BarcodeGeneratorPage } from './../pages/barcode-generator/barcode-generator';
 import { BarcodeReaderPage } from './../pages/barcode-reader/barcode-reader';
 import { QrCodeGeneratorPage } from './../pages/qr-code-generator/qr-code-generator';
-import { HomePage } from '../pages/home/home';
-import { IntroductionService, SQLStorageService } from "../shared/index";
 import { IntroductionPage } from "../pages/introduction/introduction";
 
 @Component({
@@ -18,7 +18,7 @@ import { IntroductionPage } from "../pages/introduction/introduction";
 export class MyApp {
     @ViewChild(Nav) nav: Nav;
 
-    rootPage: any = HomePage;
+    rootPage: any = BarcodeReaderPage;
 
     pages: Array<{title: string, component: any}>;
 
@@ -28,13 +28,13 @@ export class MyApp {
         public splashScreen: SplashScreen,
         private introductionService: IntroductionService,
         private sqlStorageService: SQLStorageService,
-        private adMobFree: AdMobFree
+        private appReadyService: AppReadyService,
+        private adService: AdService,
     ) {
         this.initializeApp();
 
         // used for an example of ngFor and navigation
         this.pages = [
-            { title: 'Home', component: HomePage },
             { title: 'Barcode Reader', component: BarcodeReaderPage },
             { title: 'QR Generator', component: QrCodeGeneratorPage },
             { title: 'Barcode Generator', component: BarcodeGeneratorPage },
@@ -42,41 +42,33 @@ export class MyApp {
     }
 
     initializeApp() {
+        
         this.platform.ready().then(() => {
-        // Okay, so the platform is ready and our plugins are available.
-        // Here you can do any higher level native things you might need.
-        this.statusBar.styleDefault();
-        this.splashScreen.hide();
+            // Okay, so the platform is ready and our plugins are available.
+            // Here you can do any higher level native things you might need.
+            this.statusBar.styleDefault();
+            this.splashScreen.hide();
+            
+            this.adService.showAdBanner();
 
-        this.sqlStorageService.initializeDatabase().then((database) => {
-                    this.seenIntroduction();
-                }, (rejected) => {
-                    this.seenIntroduction();
-                });
-        });
-        this.showAdBanner();
-    }
-
-    showAdBanner(): void {
-        const bannerConfig: AdMobFreeBannerConfig = {
-            isTesting: true,
-            autoShow: true
-        };
-
-        this.adMobFree.banner.config(bannerConfig);
-
-        this.adMobFree.banner.prepare().then((value) => {
-
-        })
-        .catch((rejected) => {
-            console.error(`Error, could not show ad banner: ${rejected}`);
+            this.platform.registerBackButtonAction(() => {
+                if (this.nav.length() === 1) {
+                    this.adService.showInterstitialBanner();
+                }
+            });
+            
+            this.sqlStorageService.initializeDatabase()
+            .then((value) => {
+                this.appReadyService.enableAppReady();
+                this.seenIntroduction();
+            });
         });
     }
 
     seenIntroduction(): Promise<any> {
         return this.introductionService.hasSeenIntroduction().then((introduction) => {
             if (introduction != null) {
-                this.rootPage = HomePage;
+                this.rootPage = BarcodeReaderPage;
             } else {
                 this.rootPage = IntroductionPage;
             }

@@ -5,8 +5,13 @@
         </ion-buttons>
         <ion-title>Barcode Detail</ion-title>
         <ion-buttons end>
-            <button ion-button (click)="lookUpBarcodeClicked($event)">
-                <ion-icon class="large-icon" name="search"></ion-icon>
+                <button ion-button (click)="shareClicked($event)">
+                    <ion-icon padding class="large-icon" name="share"></ion-icon>
+                </button>
+        </ion-buttons>
+        <ion-buttons right>
+            <button ion-button (click)="moreClicked($event)">
+                <ion-icon class="large-icon" name="more"></ion-icon>
             </button>
         </ion-buttons>
     </ion-navbar>
@@ -17,15 +22,27 @@
         <ion-card-header>
             <h1 class="card-title">Barcode</h1>
         </ion-card-header>
-        <ion-card-content *ngIf="barcodeModel !== null">
+        <ion-card-content *ngIf="barcode !== null">
             <div padding-bottom (press)="codePressed($event)">
                 <h2 class="card-subtitle">Content</h2>
-                <p class="card-content">{{ barcodeModel.code }}</p>
+                <p class="card-content">{{ barcode.code }}</p>
             </div>
             <div padding-bottom>
                 <h2 class="card-subtitle">Date</h2>
-                <p class="card-content">{{ barcodeModel.date | date }}
+                <p class="card-content">{{ barcode.date | date }}
+            </div>
+            <div padding-bottom>
+                <h2 class="card-subtitle">Format</h2>
+                <p class="card-content">{{ barcode.format }}
             </div>
         </ion-card-content>
     </ion-card>
+    <div class="flex justify-center" *ngIf="barcode !== null">
+        <ngx-barcode #barcodeElement 
+            [bc-value]="barcode.code"
+            [bc-format]="barcode.format"
+            [bc-display-value]="true"
+            [bc-element-type]="'img'"
+            ></ngx-barcode>    
+    </div>
 </ion-content>

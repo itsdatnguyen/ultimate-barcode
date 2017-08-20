@@ -1,15 +1,15 @@
-import { BrowserService } from './../../shared/browser.service';
+import { BarcodeParserService } from './../../shared/barcode-parser.service';
+import { QrCodeDetailPage } from './../qr-code-detail/qr-code-detail';
+import { BarcodeDetailPage } from './../barcode-detail/barcode-detail';
 import { AppRate } from '@ionic-native/app-rate';
 import { StatisticsService } from './../../shared/statistics.service';
 import { QrCodeHistoryPage } from './../qr-code-history/qr-code-history';
 import { BarcodeHistoryPage } from './../barcode-history/barcode-history';
-import { BarcodeReaderService } from './barcode-reader.service';
+import { BarcodeReaderService, CodeEntry } from './barcode-reader.service';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
 
 import { BarcodeScanner, BarcodeScanResult } from "@ionic-native/barcode-scanner";
-
-import { Utility } from "../../shared/utility";
 
 @IonicPage()
 @Component({
@@ -22,11 +22,11 @@ export class BarcodeReaderPage {
     qrCodeHistoryRoot = QrCodeHistoryPage;
 
     constructor(
+        private barcodeParserService: BarcodeParserService,
         public navCtrl: NavController, 
         public navParams: NavParams,
         private barcodeScanner: BarcodeScanner,
-        private alertController: AlertController,
-        private browser: BrowserService,
+        private modalController: ModalController,
         private barcodeReaderService: BarcodeReaderService,
         private statisticsService: StatisticsService,
         private appRate: AppRate) {
@@ -82,74 +82,31 @@ export class BarcodeReaderPage {
     }
 
     handleUPCCode(result: BarcodeScanResult): void {
-        let confirmationAlert = this.alertController.create({
-            title: 'UPC Found',
-            message: `${result.text} was found. Would you like to search that result?`,
-            buttons: [
-                {
-                    text: 'Cancel',
-                    role: 'cancel',
-                    handler: () => {
-                        
-                    }
-                },
-                {
-                    text: 'Search',
-                    role: 'search',
-                    handler: () => {
-                        this.browser.openInBrowser(`http://www.upcindex.com/${result.text}`);
-                    }
-                }
-            ]
-        });    
-
-        confirmationAlert.present();
-
-        this.barcodeReaderService.storeBarcode({
+        let entry: CodeEntry = {
             code: result.text,
-            date: Date.now()
-        });
+            format: result.format,
+            date: Date.now(),
+        };
+
+        entry = this.barcodeParserService.sanitizeCodeEntry(entry);
+
+        this.barcodeReaderService.storeBarcode(entry);
+
+        let barcodeModal = this.modalController.create(BarcodeDetailPage, entry);
+        barcodeModal.present();
     }
 
-    handleQRCode(result: BarcodeScanResult): void {
-        if (Utility.isValidUrl(result.text)) {
-            let confirmationAlert = this.alertController.create({
-                title: 'Url Link',
-                message: `Would you like to open the link ${result.text}?`,
-                buttons: [
-                    {
-                        text: 'Cancel',
-                        role: 'cancel',
-                        handler: () => {
-                            
-                        }
-                    },
-                    {
-                        text: 'Open Link',
-                        role: 'open',
-                        handler: () => {
-                            this.browser.openInBrowser(result.text);                                           
-                        },
-                        
-                    }
-                ]
-            });
-
-            confirmationAlert.present();
-
-        } else {
-            let textAlert = this.alertController.create({
-                title: 'Found Plain Text',
-                message: result.text
-            });
-
-            textAlert.present();
-        }     
-        
-        this.barcodeReaderService.storeQrCode({
+    handleQRCode(result: BarcodeScanResult): void {    
+        let entry: CodeEntry = {
             code: result.text,
-            date: Date.now()
-        });
+            format: result.format,
+            date: Date.now(),
+        };
+
+        this.barcodeReaderService.storeQrCode(entry);
+
+        let qrModal = this.modalController.create(QrCodeDetailPage, entry);
+        qrModal.present();
     }
 
 }

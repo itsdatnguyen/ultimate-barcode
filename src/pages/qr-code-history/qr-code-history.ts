@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angu
 
 import { QrCodeDetailPage } from './../qr-code-detail/qr-code-detail';
 import { BarcodeReaderService, CodeEntry } from './../barcode-reader/barcode-reader.service';
+import { AppReadyService } from "../../shared/index";
 
 @IonicPage()
 @Component({
@@ -17,18 +18,22 @@ export class QrCodeHistoryPage {
         public navCtrl: NavController, 
         public navParams: NavParams,
         public modalController: ModalController,
-        private barcodeReaderService: BarcodeReaderService,) {
+        private barcodeReaderService: BarcodeReaderService,
+        private appReadyService: AppReadyService
+    ) {
     }
 
     ionViewDidLoad() {
-        this.barcodeReaderService.createQRCodeTable().then((value) => {
-            this.barcodeReaderService.getAllQRCodes().then((results) => {   
+        this.appReadyService.isAppReady().subscribe((value) => {
+            this.barcodeReaderService.createQRCodeTable().then((value) => {
+                this.barcodeReaderService.getAllQRCodes().then((results) => {   
+                    this.updateQrCodes(results);
+                });        
+            });
+    
+            this.barcodeReaderService.onQrCodeChange.subscribe((results) => {
                 this.updateQrCodes(results);
-            });        
-        });
-
-        this.barcodeReaderService.onQrCodeChange.subscribe((results) => {
-            this.updateQrCodes(results);
+            });
         });
     }
 
@@ -39,8 +44,7 @@ export class QrCodeHistoryPage {
 
     updateQrCodes(results: any): void {                 
         let codes = [];
-        let length = results.rows.length;
-        for(let i = 0; i < length; i++) {
+        for (let i = results.rows.length - 1; i >= 0; i--) {
             let object = results.rows.item(i);
             codes.push(object);
         }

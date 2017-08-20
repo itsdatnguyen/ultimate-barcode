@@ -7,6 +7,7 @@ export interface CodeEntry {
     id?: number;
     code?: string;
     date?: number;
+    format?: string;
 }
 
 @Injectable()
@@ -26,12 +27,12 @@ export class BarcodeReaderService {
     }
 
     constructor(private sqlStorageService: SQLStorageService,
-        private alertController: AlertController) {
-            
+        private alertController: AlertController) {  
     }
 
     storeBarcode(codeEntry: CodeEntry): Promise<any> {
-        return this.sqlStorageService.SQLiteObject.executeSql(`INSERT INTO ${this.BARCODE_TABLE_NAME} (code, date) VALUES ("${codeEntry.code}", ${codeEntry.date})`, {})
+        let sqlCommand = `INSERT INTO ${this.BARCODE_TABLE_NAME} (code, format, date) VALUES ("${codeEntry.code}", "${codeEntry.format}", ${codeEntry.date})`;
+        return this.sqlStorageService.SQLiteObject.executeSql(sqlCommand, {})
         .then((data) => {
             this.getAllBarcodes().then((barcodes) => {
                 this._barcodeChanged.emit(barcodes); 
@@ -43,7 +44,7 @@ export class BarcodeReaderService {
     }
 
     storeQrCode(codeEntry: CodeEntry): Promise<any> {
-        let sqlCommand = `INSERT INTO ${this.QR_CODE_TABLE_NAME} (code, date) VALUES ("${codeEntry.code}", ${codeEntry.date})`;
+        let sqlCommand = `INSERT INTO ${this.QR_CODE_TABLE_NAME} (code, format, date) VALUES ("${codeEntry.code}", "${codeEntry.format}", ${codeEntry.date})`;
         return this.sqlStorageService.SQLiteObject.executeSql(sqlCommand, {})
         .then((data) => {
             this.getAllQRCodes().then((qrCodes) => {
@@ -94,14 +95,14 @@ export class BarcodeReaderService {
     }
 
     createBarcodeTable(): Promise<any> {
-        return this.sqlStorageService.SQLiteObject.executeSql(`CREATE TABLE IF NOT EXISTS ${this.BARCODE_TABLE_NAME} (code TEXT, date INT)`, [])
+        return this.sqlStorageService.SQLiteObject.executeSql(`CREATE TABLE IF NOT EXISTS ${this.BARCODE_TABLE_NAME} (code TEXT, format TEXT, date INT)`, [])
         .catch((rejected) => {
             this.error(`Error failed to create UPC barcode table: ${JSON.stringify(rejected)}`)
         });
     }
 
     createQRCodeTable(): Promise<any> {
-        return this.sqlStorageService.SQLiteObject.executeSql(`CREATE TABLE IF NOT EXISTS ${this.QR_CODE_TABLE_NAME} (code TEXT, date INT)`, [])
+        return this.sqlStorageService.SQLiteObject.executeSql(`CREATE TABLE IF NOT EXISTS ${this.QR_CODE_TABLE_NAME} (code TEXT, format TEXT, date INT)`, [])
         .catch((rejected) => {
             this.error(`Error failed to create QR code table: ${JSON.stringify(rejected)}`)
         });

@@ -22,18 +22,22 @@
         <ion-card-header class="card-title">
             <h1>Qr Code</h1>
         </ion-card-header>
-        <ion-card-content *ngIf="qrCodeModel !== null">
+        <ion-card-content *ngIf="qrCode !== null">
             <div padding-bottom (press)="codePressed($event)">
                 <h2 class="card-subtitle">Data</h2>
-                <p class="card-content">{{ qrCodeModel.code }}</p>
+                <p class="card-content">{{ qrCode.code }}</p>
             </div>
             <div padding-bottom>
                 <h2 class="card-subtitle">Date</h2>
-                <p class="card-content">{{ qrCodeModel.date | date }}
+                <p class="card-content">{{ qrCode.date | date }}
+            </div>  
+            <div padding-bottom>
+                <h2 class="card-subtitle">Format</h2>
+                <p class="card-content">{{ qrCode.format }}
             </div>  
         </ion-card-content>
     </ion-card>
-    <div class="flex justify-center" *ngIf="qrCodeModel != null">
-        <qr-code [value]="qrCodeModel.code" #qrCodeElement></qr-code>
+    <div class="flex justify-center" *ngIf="qrCode != null">
+        <qr-code [value]="qrCode.code" [size]="200" #qrCodeElement></qr-code>
     </div>
 </ion-content>

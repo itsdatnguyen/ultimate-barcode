@@ -1,3 +1,5 @@
+import { ColorPickerPageModule } from './../pages/color-picker/color-picker.module';
+import { BarcodeParserService } from './../shared/barcode-parser.service';
 import { BarcodeDetailOptionsPageModule } from './../pages/barcode-detail-options/barcode-detail-options.module';
 import { BarcodeGeneratorPageModule } from './../pages/barcode-generator/barcode-generator.module';
 import { QrCodeDetailOptionsPageModule } from './../pages/qr-code-detail-options/qr-code-detail-options.module';
@@ -19,8 +21,7 @@ import { IntroductionPageModule } from './../pages/introduction/introduction.mod
 import { BarcodeReaderService } from './../pages/barcode-reader/barcode-reader.service';
 
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
-import { IntroductionService, SQLStorageService, UserSettingsService, StatisticsService, BrowserService } from "../shared/index";
+import { AdService, IntroductionService, SQLStorageService, UserSettingsService, StatisticsService, BrowserService, AppReadyService, BarcodeSaverService } from "../shared/index";
 import { HomePageModule } from "../pages/home/home.module";
 
 
@@ -32,6 +33,7 @@ export const AppPages = [
     BarcodeDetailPageModule,
     BarcodeGeneratorPageModule,
     BarcodeDetailOptionsPageModule,
+    ColorPickerPageModule,
     QrCodeHistoryPageModule,
     QrCodeDetailPageModule,
     QrCodeDetailOptionsPageModule,
@@ -63,6 +65,10 @@ export const AppPages = [
         StatisticsService,
         BarcodeReaderService,
         BrowserService,
+        BarcodeParserService,
+        BarcodeSaverService,
+        AppReadyService,
+        AdService,
         DatePipe,
     ]
 })

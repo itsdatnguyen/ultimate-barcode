@@ -1,6 +1,5 @@
 import { BrowserService } from './../../shared/browser.service';
-import { QrCodeDetailOptionsPage, QrCodeDetailOptionsInfo, QrCodeDetailOption } from './../qr-code-detail-options/qr-code-detail-options';
-import { ToastController } from 'ionic-angular';
+import { QrCodeDetailOptionsPage, QrCodeDetailOption } from './../qr-code-detail-options/qr-code-detail-options';
 import { QRCodeGeneratorService } from './qr-code-generator.service';
 import { Component, HostListener, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, PopoverController } from 'ionic-angular';
@@ -30,7 +29,6 @@ export class QrCodeGeneratorPage {
         public navParams: NavParams,
         private qrService: QRCodeGeneratorService,
         private browser: BrowserService,
-        private toastController: ToastController,
         private popoverController: PopoverController,
         private social: SocialSharing) {
     }
@@ -64,9 +62,9 @@ export class QrCodeGeneratorPage {
             ev: $event
         });
         
-        morePopover.onWillDismiss((data: QrCodeDetailOptionsInfo, role: string) => {
-            if(data != null) {
-                switch(data.option) {
+        morePopover.onWillDismiss((option: QrCodeDetailOption, role: string) => {
+            if(option != null) {
+                switch(option) {
                     case QrCodeDetailOption.Download:
                         this.qrService.saveQRCodeAsImage(this.getQrImage().src);               
                         break;

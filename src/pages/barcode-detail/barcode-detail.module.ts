@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
+
+import { NgxBarcodeModule } from 'ngx-barcode';
 import { BarcodeDetailPage } from './barcode-detail';
 
 @NgModule({
@@ -8,6 +10,7 @@ import { BarcodeDetailPage } from './barcode-detail';
     ],
     imports: [
         IonicPageModule.forChild(BarcodeDetailPage),
+        NgxBarcodeModule,
     ],
     entryComponents: [
         BarcodeDetailPage,

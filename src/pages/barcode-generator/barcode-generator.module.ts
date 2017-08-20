@@ -10,7 +10,7 @@ import { BarcodeGeneratorPage } from './barcode-generator';
     ],
     imports: [
         IonicPageModule.forChild(BarcodeGeneratorPage),
-        NgxBarcodeModule
+        NgxBarcodeModule,
     ],
     entryComponents: [
         BarcodeGeneratorPage

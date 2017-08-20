@@ -1,5 +1,8 @@
 <ion-header>
     <ion-navbar color="primary">
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
         <ion-title>Barcode Reader</ion-title>
         <ion-buttons end>
             <button ion-button (click)="onBeginScan(event)">
@@ -7,9 +10,10 @@
             </button>
         </ion-buttons>
     </ion-navbar>
+
 </ion-header>
 
 <ion-tabs>
-    <ion-tab tabIcon="barcode" tabTitle="Barcode" [root]="barcodeHistoryRoot"></ion-tab>
-    <ion-tab tabIcon="qr-scanner" tabTitle="Qr Code" [root]="qrCodeHistoryRoot"></ion-tab>
+    <ion-tab tabIcon="barcode" tabTitle="Barcode History" [root]="barcodeHistoryRoot"></ion-tab>
+    <ion-tab tabIcon="qr-scanner" tabTitle="Qr Code History" [root]="qrCodeHistoryRoot"></ion-tab>
 </ion-tabs>

@@ -1,4 +1,4 @@
-import { HomePage } from './../home/home';
+import { BarcodeReaderPage } from './../barcode-reader/barcode-reader';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { IntroductionService } from "../../shared/index";
@@ -19,7 +19,7 @@ export class IntroductionPage {
 
     exitIntroduction() {
         this.introductionService.setIntroductionStatus(true);
-        this.navCtrl.setRoot(HomePage);
+        this.navCtrl.setRoot(BarcodeReaderPage);
         this.navCtrl.popToRoot();
     }
 }

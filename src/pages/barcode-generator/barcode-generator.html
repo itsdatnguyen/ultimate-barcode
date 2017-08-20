@@ -1,15 +1,30 @@
 <ion-header>
     <ion-navbar color="primary">
         <ion-title>Barcode Generator</ion-title>
+        <ion-buttons end>
+            <button ion-button (click)="shareClicked($event)">
+                <ion-icon padding class="large-icon" name="share"></ion-icon>
+            </button>
+        </ion-buttons>
+        <ion-buttons right>
+            <button ion-button (click)="moreClicked($event)">
+                <ion-icon class="large-icon" name="more"></ion-icon>
+            </button>
+        </ion-buttons>
     </ion-navbar>
 </ion-header>
 
 <ion-content padding>
     <div class="flex justify-center">
-        <ngx-barcode [bc-value]="barcode.code" 
+        <ngx-barcode #barcodeElement
+            [bc-value]="barcode.code" 
             [bc-display-value]="true"
             [bc-element-type]="barcode.elementType"
-            [bc-format]="barcode.format"></ngx-barcode>
+            [bc-format]="barcode.format"
+            [bc-line-color]="barcode.color"
+            [bc-font-size]="barcode.fontSize"
+            [bc-text-position]="barcode.textPosition"
+            [bc-background]="barcode.backgroundColor"></ngx-barcode>
     </div>
     <ion-card>
         <ion-card-header>
@@ -18,10 +33,58 @@
         <ion-card-content>
             <ion-grid>
                 <ion-row>
-                    <ion-col col-sm-6 col-md-4 col-lg-3>
+                    <ion-col col-12>
                         <ion-item>
-                            <ion-label color="primary" floating>Input</ion-label>
-                            <ion-input type="text" [(ngModel)]="barcode.code"></ion-input>
+                            <ion-label color="primary">Code</ion-label>
+                            <ion-input color="primary" type="text" [(ngModel)]="barcode.code"></ion-input>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col col-12>
+                        <ion-item>
+                            <ion-label color="primary">Format</ion-label>
+                            <ion-select color="primary" [(ngModel)]="barcode.format">
+                                <ion-option *ngFor="let format of barcodeTypes" [value]="format">
+                                    {{ format }}
+                                </ion-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col col-12>
+                        <ion-item>
+                            <ion-label color="primary">Line Color</ion-label>
+                            <ion-input color="primary" type="text" [(ngModel)]="barcode.color">
+                            </ion-input>
+                            <button ion-button icon-only item-right (click)="onBarcodeColorPaletteClicked($event)">
+                                <ion-icon name="color-palette"></ion-icon>                
+                            </button>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col col-12>
+                        <ion-item>
+                            <ion-label color="primary">Background Color</ion-label>
+                            <ion-input color="primary" type="text" [(ngModel)]="barcode.backgroundColor"></ion-input>
+                            <button ion-button icon-only item-right (click)="onBarcodeBackgroundColorPaletteClicked($event)">
+                                <ion-icon name="color-palette"></ion-icon>                
+                            </button>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col col-12>
+                        <ion-item>
+                            <ion-label color="primary">Font Size</ion-label>
+                            <ion-input color="primary" type="text" [(ngModel)]="barcode.fontSize"></ion-input>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col col-12>
+                        <ion-item>
+                            <ion-label color="primary">Text Position</ion-label>
+                            <ion-select color="primary" [(ngModel)]="barcode.textPosition">
+                                <ion-option value="bottom">
+                                    Bottom
+                                </ion-option>
+                                <ion-option value="top">
+                                    Top
+                                </ion-option>
+                            </ion-select>
                         </ion-item>
                     </ion-col>
                 </ion-row>

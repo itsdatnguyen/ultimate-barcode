@@ -39,6 +39,6 @@ export class QrCodeDetailOptionsPage {
     }
 
     optionClicked($event, option: QrCodeDetailOptionsInfo) {
-        this.viewController.dismiss(option);
+        this.viewController.dismiss(option.option);
     }
 }

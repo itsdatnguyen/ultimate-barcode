@@ -15,7 +15,7 @@ export class BrowserService {
                 
             } else {
                 return new Promise((resolve, reject) => {
-                    let a = window.open(url, '_system');
+                    window.open(url, '_system');
                     resolve();
                 });
             }
