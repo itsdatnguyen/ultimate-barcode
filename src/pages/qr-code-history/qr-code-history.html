@@ -3,8 +3,8 @@
 </ion-header>
 
 <ion-content>
-    <ion-row padding>
-        <ion-row col-8>
+    <ion-row padding-horizontal>
+        <ion-row col-8 class="qr-code-header">
             <h2>Qr Code</h2>
         </ion-row>
         <ion-row col-4>
@@ -13,7 +13,7 @@
     </ion-row>
     <p text-center *ngIf="qrCodes.length === 0">No Qr Codes found</p>
     <ion-list [virtualScroll]="qrCodes"
-        [approxItemHeight]="'132px'">
+        [approxItemHeight]="'55px'">
         <ion-item *virtualItem="let code" (tap)="onRowClicked(code)">  
             <ion-row>
                 <ion-col col-8 class="row-scroll-x">

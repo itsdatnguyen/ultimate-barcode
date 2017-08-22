@@ -20,7 +20,7 @@
 <ion-content padding>
     <ion-card>
         <ion-card-header>
-            <h1 class="card-title">Barcode</h1>
+            <h1 class="card-title">Details</h1>
         </ion-card-header>
         <ion-card-content *ngIf="barcode !== null">
             <div padding-bottom (press)="codePressed($event)">
@@ -28,21 +28,21 @@
                 <p class="card-content">{{ barcode.code }}</p>
             </div>
             <div padding-bottom>
-                <h2 class="card-subtitle">Date</h2>
-                <p class="card-content">{{ barcode.date | date }}
-            </div>
-            <div padding-bottom>
                 <h2 class="card-subtitle">Format</h2>
                 <p class="card-content">{{ barcode.format }}
             </div>
+            <div padding-bottom>
+                <h2 class="card-subtitle">Date</h2>
+                <p class="card-content">{{ barcode.date | date:'dd/MM/y h:ma'}}
+            </div>
         </ion-card-content>
     </ion-card>
-    <div class="flex justify-center" *ngIf="barcode !== null">
+    <ion-card padding class="flex justify-center" *ngIf="barcode !== null">
         <ngx-barcode #barcodeElement 
             [bc-value]="barcode.code"
             [bc-format]="barcode.format"
             [bc-display-value]="true"
             [bc-element-type]="'img'"
             ></ngx-barcode>    
-    </div>
+    </ion-card >
 </ion-content>

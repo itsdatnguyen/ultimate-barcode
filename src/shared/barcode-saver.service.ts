@@ -25,7 +25,7 @@ export class BarcodeSaverService {
                 message: `Saved Barcode at ${value}`,
                 closeButtonText: 'Close',
                 showCloseButton: true,
-                duration: 2500
+                duration: 4000
             });
 
             saveToast.present();

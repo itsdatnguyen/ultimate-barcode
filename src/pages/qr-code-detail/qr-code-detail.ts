@@ -7,7 +7,7 @@ import { ToastController, PopoverController } from 'ionic-angular';
 import { CodeEntry } from './../barcode-reader/barcode-reader.service';
 import { Clipboard } from '@ionic-native/clipboard';
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController, ViewController } from 'ionic-angular';
+import { IonicPage, NavParams, AlertController, ViewController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -21,7 +21,6 @@ export class QrCodeDetailPage {
     qrCode: CodeEntry = null;
 
     constructor(
-        public navCtrl: NavController, 
         public navParams: NavParams,
         private qrCodeGeneratorService: QRCodeGeneratorService,
         private viewController: ViewController,
@@ -62,12 +61,25 @@ export class QrCodeDetailPage {
                         this.saveQRCodeAsImage();
                         break;
 
-                    case QrCodeDetailOption.OpenUrl:
-                        this.browser.openInBrowser(this.qrCode.code);
+                    case QrCodeDetailOption.Open:
+                        this.browser.openInBrowser(this.qrCode.code)
+                        .then((value) => {
+                            this.adService.showInterstitialBanner();
+                        });
+                        break;
+
+                    case QrCodeDetailOption.OpenInBrowser: 
+                        this.browser.openInNativeBrowser(this.qrCode.code)
+                        .then((value) => {
+                            this.adService.showInterstitialBanner();
+                        });
                         break;
 
                     case QrCodeDetailOption.Search:
-                        this.browser.openGoogleSearch(this.qrCode.code);
+                        this.browser.openGoogleSearch(this.qrCode.code)
+                        .then((value) => {
+                            this.adService.showInterstitialBanner();
+                        });
                         break;
                 }
             }

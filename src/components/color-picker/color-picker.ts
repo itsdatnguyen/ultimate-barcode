@@ -84,7 +84,7 @@ export class ColorPicker {
     let canvasPalette = this.palette.nativeElement;
     this.ctxPalette = canvasPalette.getContext("2d");
 
-    var currentWidth = window.innerWidth;
+    // var currentWidth = window.innerWidth;
 
     var pixelRatio = this.getPixelRatio(this.ctxPalette);
 
@@ -151,7 +151,7 @@ export class ColorPicker {
     let canvasChooser = this.chooser.nativeElement;
     var ctx = canvasChooser.getContext("2d");
 
-    var currentWidth = window.innerWidth;
+    // var currentWidth = window.innerWidth;
 
     var pixelRatio = this.getPixelRatio(ctx);
 

@@ -1,7 +1,7 @@
 import { AdService } from './../../shared/ad.service';
 import { ColorPickerPage, ColorPickerParams, ColorPickerAction } from './../color-picker/color-picker';
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, PopoverController } from 'ionic-angular';
+import { IonicPage, PopoverController } from 'ionic-angular';
 import { SocialSharing } from '@ionic-native/social-sharing';
 
 import { BarcodeDetailOptionsPage, BarcodeDetailOptions } from './../barcode-detail-options/barcode-detail-options';
@@ -18,6 +18,7 @@ export class Barcode {
         public fontSize: number,
         public textPosition: 'top' | 'bottom',
         public backgroundColor: string,
+        public valid: boolean,
     ) {
 
     }
@@ -32,12 +33,12 @@ export class BarcodeGeneratorPage {
 
     @ViewChild('barcodeElement') barcodeElement: any;    
 
-    barcode = new Barcode('1234', 'img', 'CODE128', '#000000', 20, 'bottom', '#ffffff');
+    barcode = new Barcode('1234', 'img', 'CODE128', '#000000', 20, 'bottom', '#ffffff', true);
     barcodeTypes: string[] = this.initializeFormatTypes();
 
+    barcodeInputColor = 'primary';
+
     constructor(
-        public navCtrl: NavController, 
-        public navParams: NavParams,
         private social: SocialSharing,
         private popoverController: PopoverController,
         private barcodeSaverService: BarcodeSaverService,
@@ -64,12 +65,32 @@ export class BarcodeGeneratorPage {
                         this.barcodeSaverService.saveBarcodeAsImage(this.getBarcodeImageSrc());
                         break;
 
+                    case BarcodeDetailOptions.Open:
+                        this.browser.openInBrowser(this.barcode.code)
+                        .then((value) => {
+                            this.adService.showInterstitialBanner();
+                        });
+                        break;
+
+                    case BarcodeDetailOptions.OpenInBrowser:
+                        this.browser.openInNativeBrowser(this.barcode.code)
+                        .then((value) => {
+                            this.adService.showInterstitialBanner();
+                        });
+                        break;
+
                     case BarcodeDetailOptions.SearchGoogle:
-                        this.browser.openGoogleSearch(this.barcode.code);
+                        this.browser.openGoogleSearch(this.barcode.code)
+                        .then((value) => {
+                            this.adService.showInterstitialBanner();
+                        });
                         break;
 
                     case BarcodeDetailOptions.SearchUpcIndex:
-                        this.browser.openInBrowser(`http://www.upcindex.com/${this.barcode.code}`);
+                        this.browser.openInBrowser(`http://www.upcindex.com/${this.barcode.code}`)
+                        .then((value) => {
+                            this.adService.showInterstitialBanner();
+                        });
                         break;
 
                     default:
@@ -80,6 +101,16 @@ export class BarcodeGeneratorPage {
         morePopover.present({
             ev: $event
         });
+    }
+
+    barcodeCodeChanged($event) {
+        this.barcode.code = $event;
+        this.verifyBarcode();
+    }
+
+    barcodeFormatChanged($event) {
+        this.barcode.format = $event;
+        this.verifyBarcode();
     }
 
     onBarcodeColorPaletteClicked($event) {
@@ -121,5 +152,17 @@ export class BarcodeGeneratorPage {
             return imgContainerElement.children[0].src;
         }
         return undefined;
+    }
+
+    verifyBarcode(): void {
+        setTimeout(() => {
+            if (this.getBarcodeImageSrc() === '') {
+                this.barcode.valid = false;
+                this.barcodeInputColor = 'danger';
+            } else {
+                this.barcode.valid = true;
+                this.barcodeInputColor = 'primary';
+            }
+        }, 0); 
     }
 }

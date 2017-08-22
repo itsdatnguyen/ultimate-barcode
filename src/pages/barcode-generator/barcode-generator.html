@@ -15,8 +15,8 @@
 </ion-header>
 
 <ion-content padding>
-    <div class="flex justify-center">
-        <ngx-barcode #barcodeElement
+    <ion-card class="flex justify-center">
+        <ngx-barcode padding #barcodeElement
             [bc-value]="barcode.code" 
             [bc-display-value]="true"
             [bc-element-type]="barcode.elementType"
@@ -25,7 +25,8 @@
             [bc-font-size]="barcode.fontSize"
             [bc-text-position]="barcode.textPosition"
             [bc-background]="barcode.backgroundColor"></ngx-barcode>
-    </div>
+        <h1 class="invalid-barcode" *ngIf="!barcode.valid">Invalid Barcode</h1>
+    </ion-card>
     <ion-card>
         <ion-card-header>
             Options
@@ -35,14 +36,16 @@
                 <ion-row>
                     <ion-col col-12>
                         <ion-item>
-                            <ion-label color="primary">Code</ion-label>
-                            <ion-input color="primary" type="text" [(ngModel)]="barcode.code"></ion-input>
+                            <ion-label [color]="barcodeInputColor">Code</ion-label>
+                            <ion-input [color]="barcodeInputColor" type="text" [ngModel]="barcode.code"
+                                (ngModelChange)="barcodeCodeChanged($event)"></ion-input>
                         </ion-item>
                     </ion-col>
                     <ion-col col-12>
                         <ion-item>
                             <ion-label color="primary">Format</ion-label>
-                            <ion-select color="primary" [(ngModel)]="barcode.format">
+                            <ion-select color="primary" [ngModel]="barcode.format"
+                                (ngModelChange)="barcodeFormatChanged($event)">
                                 <ion-option *ngFor="let format of barcodeTypes" [value]="format">
                                     {{ format }}
                                 </ion-option>

@@ -1,3 +1,68 @@
+$slide-welcome-color: #5C6BC0;
+$slide-scan-color: #4CAF50;
+$slide-generate-color: #E91E63;
+$slide-share-color: #03A9F4;
+$slide-ready-color: #FF8A65;
+
 page-introduction {
 
+    .slide {
+        .barcode-header {
+            height: 25%;
+            position: relative;
+        }
+
+        .body {
+            height: 75%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            color: white;                
+            
+
+            .slide-row {
+                flex: 1 1 100%;
+            }
+
+            h1 {
+                font-weight: bold;   
+            }
+
+            p {
+                font-size: 1.4rem;
+            }
+        }
+    }
+
+    .welcome-section {            
+        .body {
+            background-color: $slide-welcome-color;  
+        }
+    }
+
+    .scan-section {       
+        .body {
+            background-color: $slide-scan-color;
+        }
+    }
+
+    .generate-section {       
+        .body {
+            background-color: $slide-generate-color;
+        }
+    }
+
+    .share-section {       
+        .body {
+            background-color: $slide-share-color;
+        }
+    }
+
+    .ready-section {
+        .body {
+            background-color: $slide-ready-color;
+        }
+    }
 }

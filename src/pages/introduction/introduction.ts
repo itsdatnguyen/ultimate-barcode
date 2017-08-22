@@ -1,6 +1,7 @@
-import { BarcodeReaderPage } from './../barcode-reader/barcode-reader';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController } from 'ionic-angular';
+
+import { BarcodeReaderPage } from './../barcode-reader/barcode-reader';
 import { IntroductionService } from "../../shared/index";
 
 @IonicPage()
@@ -10,15 +11,31 @@ import { IntroductionService } from "../../shared/index";
 })
 export class IntroductionPage {
 
+    supportedScans: string[] = [
+        'CODE 128',
+        'CODE 39',
+        'UPC',
+        'EAN8',
+        'ITF14',
+    ];
+
+    supportedGenerators: string[] = [
+        'CODE128',
+        'UPC',
+        'EAN',
+        'QR',
+        'ITF14',
+    ];
+
     constructor(
         public navCtrl: NavController, 
-        public navParams: NavParams,
         private introductionService: IntroductionService) {
 
     }
 
     exitIntroduction() {
         this.introductionService.setIntroductionStatus(true);
+        this.introductionService.exitedIntroduction();
         this.navCtrl.setRoot(BarcodeReaderPage);
         this.navCtrl.popToRoot();
     }

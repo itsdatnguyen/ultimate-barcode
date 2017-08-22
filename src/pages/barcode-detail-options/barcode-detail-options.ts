@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import { IonicPage, ViewController } from 'ionic-angular';
 
 export enum BarcodeDetailOptions {
     Download,
+    Open,
+    OpenInBrowser,
     SearchUpcIndex,
     SearchGoogle,
 }
@@ -22,15 +24,13 @@ export class BarcodeDetailOptionsPage {
 
     options: BarcodeDetailOptionInfo[] = [
         { displayName: 'Download', icon: 'download', option: BarcodeDetailOptions.Download },
+        { displayName: 'Open', icon: 'open', option: BarcodeDetailOptions.Open },
+        { displayName: 'Open In Browser', icon: 'browsers', option: BarcodeDetailOptions.OpenInBrowser },
         { displayName: 'Search Google', icon: 'search', option: BarcodeDetailOptions.SearchGoogle },
         { displayName: 'Search UPC Index', icon: 'search', option: BarcodeDetailOptions.SearchUpcIndex }
     ];
 
-    constructor(
-        public navCtrl: NavController, 
-        public navParams: NavParams,
-        private viewController: ViewController,
-    ) {
+    constructor(private viewController: ViewController) {
 
     }
 

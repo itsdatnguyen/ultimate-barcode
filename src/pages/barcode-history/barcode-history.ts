@@ -2,7 +2,7 @@ import { AppReadyService } from './../../shared/app-ready.service';
 import { BarcodeDetailPage } from './../barcode-detail/barcode-detail';
 import { BarcodeReaderService, CodeEntry } from './../barcode-reader/barcode-reader.service';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
+import { IonicPage, ModalController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -14,8 +14,6 @@ export class BarcodeHistoryPage {
     barcodes: CodeEntry[] = [];
 
     constructor(
-        public navCtrl: NavController, 
-        public navParams: NavParams,
         public modalController: ModalController,
         private barcodeReaderService: BarcodeReaderService,
         private appReadyService: AppReadyService

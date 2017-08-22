@@ -22,12 +22,13 @@
                 <ion-item>Insert text to generate a QR Code</ion-item>
                 <ion-item>
                     <ion-label floating>Insert text here</ion-label>
-                    <ion-textarea class="large-textarea" type="text" cols="3" [(ngModel)]="qrCode.value"></ion-textarea>
+                    <ion-textarea class="large-textarea" type="text" cols="3" [(ngModel)]="text"></ion-textarea>
                 </ion-item>
-            </ion-list>                
+            </ion-list>      
+            <button ion-button full (click)="generateQrCodeClicked($event)">Generate QR Code</button>         
         </ion-card-content>
     </ion-card>
-    <div class="flex justify-center">
+    <ion-card padding class="flex justify-center">
         <qr-code [value]="qrCode.value" [size]="qrCode.size" #qrCodeElement></qr-code>
-    </div>
+    </ion-card>
 </ion-content>

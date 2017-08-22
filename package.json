@@ -9,6 +9,7 @@
         "build": "ionic-app-scripts build",
         "android-run": "ionic cordova run android",
         "android-run-prod": "ionic cordova run android --prod --aot --minifyjs --minifycss --optimizejs",
+        "build-android": "ionic cordova build --release android",
         "lint": "ionic-app-scripts lint",
         "ionic:build": "ionic-app-scripts build",
         "ionic:serve": "ionic-app-scripts serve"

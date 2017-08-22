@@ -3,7 +3,7 @@
 </ion-header>
 
 <ion-content>
-    <ion-row padding>
+    <ion-row padding-horizontal>
         <ion-row col-8>
             <h2>Barcode</h2>
         </ion-row>
@@ -13,7 +13,7 @@
     </ion-row>
     <p text-center *ngIf="barcodes.length === 0">No Barcodes found</p>
     <ion-list [virtualScroll]="barcodes"
-        [approxItemHeight]="'132px'">
+        [approxItemHeight]="'55px'">
         <ion-item *virtualItem="let code" (tap)="onRowTapped(code)">  
             <ion-row>
                 <ion-col col-8 class="row-scroll-x">

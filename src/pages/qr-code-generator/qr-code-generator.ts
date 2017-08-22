@@ -3,7 +3,7 @@ import { BrowserService } from './../../shared/browser.service';
 import { QrCodeDetailOptionsPage, QrCodeDetailOption } from './../qr-code-detail-options/qr-code-detail-options';
 import { QRCodeGeneratorService } from './qr-code-generator.service';
 import { Component, HostListener, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, PopoverController } from 'ionic-angular';
+import { IonicPage, PopoverController } from 'ionic-angular';
 
 import { SocialSharing } from '@ionic-native/social-sharing';
 
@@ -23,11 +23,11 @@ export class QrCodeGeneratorPage {
 
     @ViewChild('qrCodeElement') qrCodeElement: any;
 
+    text = '';
+
     qrCode = new QRCode('', 150);
 
     constructor(
-        public navCtrl: NavController, 
-        public navParams: NavParams,
         private qrService: QRCodeGeneratorService,
         private browser: BrowserService,
         private popoverController: PopoverController,
@@ -43,6 +43,7 @@ export class QrCodeGeneratorPage {
 
     ionViewDidLoad() {
         this.qrService.getRememberedQRCodeInput().then((result) => {
+            this.text = result;
             this.qrCode.value = result;
         });
         this.setQRCodeSize(window.innerWidth / 1.5);   
@@ -52,6 +53,10 @@ export class QrCodeGeneratorPage {
         if (this.qrCode.value !== '') {
             this.qrService.rememberQRCodeInput(this.qrCode.value);
         }
+    }
+
+    generateQrCodeClicked($event) {
+        this.qrCode.value = this.text;
     }
 
     shareClicked($event) {
@@ -64,9 +69,6 @@ export class QrCodeGeneratorPage {
 
     moreClicked($event: UIEvent) {
         let morePopover = this.popoverController.create(QrCodeDetailOptionsPage);
-        morePopover.present({
-            ev: $event
-        });
         
         morePopover.onWillDismiss((option: QrCodeDetailOption, role: string) => {
             if(option != null) {
@@ -74,17 +76,34 @@ export class QrCodeGeneratorPage {
                     case QrCodeDetailOption.Download:
                         this.qrService.saveQRCodeAsImage(this.getQrImage().src);               
                         break;
-
-                    case QrCodeDetailOption.OpenUrl:
-                        this.browser.openInBrowser(this.qrCode.value);
+                    
+                    case QrCodeDetailOption.Open:
+                        this.browser.openInBrowser(this.qrCode.value)
+                        .then((value) => {
+                            this.adService.showInterstitialBanner();
+                        });
                         break;
-
+                    
+                    case QrCodeDetailOption.OpenInBrowser: 
+                        this.browser.openInNativeBrowser(this.qrCode.value)
+                        .then((value) => {
+                            this.adService.showInterstitialBanner();
+                        });
+                        break;
+                    
                     case QrCodeDetailOption.Search:
-                        this.browser.openGoogleSearch(this.qrCode.value);
+                        this.browser.openGoogleSearch(this.qrCode.value)
+                        .then((value) => {
+                            this.adService.showInterstitialBanner();
+                        });
                         break;
                 }       
             }
         });
+
+        morePopover.present({
+            ev: $event
+        });       
     }
 
     setQRCodeSize(size: number): void {

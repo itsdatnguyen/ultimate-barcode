@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import { IonicPage, NavParams, ViewController } from 'ionic-angular';
 
 export enum QrCodeDetailOption {
     Download,
-    OpenUrl,
+    Open,
+    OpenInBrowser,
     Search
 }
 
@@ -24,12 +25,12 @@ export class QrCodeDetailOptionsPage {
 
     options: QrCodeDetailOptionsInfo[] = [
         { displayName: 'Download', icon: 'download', option: QrCodeDetailOption.Download },
-        { displayName: 'Open Url', icon: 'browsers', option: QrCodeDetailOption.OpenUrl },
+        { displayName: 'Open', icon: 'open', option: QrCodeDetailOption.Open },
+        { displayName: 'Open In Browser', icon: 'browsers', option: QrCodeDetailOption.OpenInBrowser },
         { displayName: 'Search', icon: 'search', option: QrCodeDetailOption.Search }
     ];
 
     constructor(
-        public navCtrl: NavController, 
         public navParams: NavParams,
         private viewController: ViewController) {
     }

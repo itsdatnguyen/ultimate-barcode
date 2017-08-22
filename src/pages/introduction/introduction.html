@@ -1,35 +1,95 @@
-<ion-header>
-    <ion-navbar color="primary">
-        <ion-title>Welcome</ion-title>
-        <ion-buttons end>
-            <button ion-button (click)="exitIntroduction()">
-                Skip
-            </button>
-        </ion-buttons>
-    </ion-navbar>
-</ion-header>
-
-<ion-content padding>
+<ion-content>
     <ion-slides pager>
-        <ion-slide>
-            <ion-card>
-                <ion-card-header></ion-card-header>
-                <ion-card-content></ion-card-content>
-            </ion-card>
+        <ion-slide class="welcome-section slide">
+            <div class="card-2 barcode-header">
+                <img padding src="images/welcome.png" />
+            </div>
+            <div padding class="slide-section body">
+                <div class="slide-row">
+                    <h1 text-center>
+                        Welcome to Ultimate Barcode
+                    </h1>
+                    <p text-center>
+                        Become a master of barcodes with fast barcode scanning and generation tools.
+                    </p>
+                </div>
+            </div>
         </ion-slide>
-        <ion-slide>
-            <ion-card>
-                <ion-card-header></ion-card-header>
-                <ion-card-content></ion-card-content>
-            </ion-card>
+        <ion-slide class="scan-section slide">
+            <div class="card-2 barcode-header">
+                <img padding src="images/scan.png" />
+            </div>
+            <div padding class="slide-section body">
+                <div class="slide-row">
+                    <h1 text-center>
+                        Scanner
+                    </h1>
+                    <div text-center>
+                        <p>
+                            Ultimate Barcode can scan many formats such as:
+                        </p>
+                        <ion-list class="card-3">
+                            <ion-item *ngFor="let type of supportedScans">
+                                <ion-icon name="barcode"></ion-icon>
+                                {{ type }}
+                                <ion-icon item-end name="checkmark"></ion-icon>
+                            </ion-item>
+                        </ion-list>
+                    </div>
+                </div>
+            </div>
         </ion-slide>
-        <ion-slide>
-            <ion-card>
-                <ion-card-header></ion-card-header>
-                <ion-card-content>
-                    <button ion-button full (click)="exitIntroduction()">Ready to go?</button>
-                </ion-card-content>
-            </ion-card>
+        <ion-slide class="generate-section slide">
+            <div class="card-2 barcode-header">
+                <img padding src="images/generate.png" />
+            </div>
+            <div padding class="slide-section body">
+                <div class="slide-row">
+                    <h1 text-center>
+                        Generator
+                    </h1>
+                    <div text-center>
+                        <p>
+                            Ultimate Barcode can also generate these:
+                        </p>                        
+                        <ion-list class="card-3">
+                            <ion-item *ngFor="let type of supportedGenerators">
+                                <ion-icon name="barcode"></ion-icon>
+                                {{ type }}
+                                <ion-icon item-end name="checkmark"></ion-icon>
+                            </ion-item>
+                        </ion-list>
+                    </div>
+                </div>
+            </div>
+        </ion-slide>
+        <ion-slide class="share-section slide">
+            <div class="card-2 barcode-header">
+                <img padding src="images/share.png" />
+            </div>
+            <div padding class="slide-section body">
+                <div class="slide-row">
+                    <h1 text-center>
+                        Share your creations
+                    </h1>
+                    <p text-center>
+                        Share and download your creations or other codes you found elsewhere.
+                    </p>
+                </div>
+            </div>
+        </ion-slide>
+        <ion-slide class="ready-section slide">
+            <div class="card-2 barcode-header">
+                <img padding src="images/ready.png" />
+            </div>
+            <div padding class="slide-section body">
+                <div class="slide-row">
+                    <h1 text-center>
+                        Ready?
+                    </h1>
+                    <button class="card-2" ion-button (click)="exitIntroduction()">Alright, take me in</button>                    
+                </div>
+            </div>
         </ion-slide>
     </ion-slides>
 </ion-content>

@@ -9,6 +9,13 @@ export class BrowserService {
     }
 
     openInBrowser(url: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            window.open(url, '_system');
+            resolve();
+        });
+    }
+    
+    openInNativeBrowser(url: string): Promise<any>  {
         return this.browserTab.isAvailable().then((available: boolean) => {
             if (available) {
                 return this.browserTab.openUrl(url);
@@ -19,7 +26,7 @@ export class BrowserService {
                     resolve();
                 });
             }
-        })
+        });
     }
 
     openGoogleSearch(text: string): Promise<any> {

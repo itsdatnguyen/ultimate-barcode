@@ -3,7 +3,6 @@ import { Nav, Platform } from 'ionic-angular';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { AdMobFree, AdMobFreeBannerConfig } from '@ionic-native/admob-free';
 
 import { IntroductionService, SQLStorageService, AppReadyService, AdService } from "../shared";
 
@@ -33,9 +32,7 @@ export class MyApp {
     ) {
         this.initializeApp();
 
-        // used for an example of ngFor and navigation
         this.pages = [
-            { title: 'Barcode Reader', component: BarcodeReaderPage },
             { title: 'QR Generator', component: QrCodeGeneratorPage },
             { title: 'Barcode Generator', component: BarcodeGeneratorPage },
         ];
@@ -47,13 +44,14 @@ export class MyApp {
             // Okay, so the platform is ready and our plugins are available.
             // Here you can do any higher level native things you might need.
             this.statusBar.styleDefault();
-            this.splashScreen.hide();
-            
-            this.adService.showAdBanner();
-            
+            this.splashScreen.hide();      
+                        
             this.sqlStorageService.initializeDatabase()
             .then((value) => {
                 this.appReadyService.enableAppReady();
+                this.seenIntroduction();
+            })
+            .catch((error) => {
                 this.seenIntroduction();
             });
         });
@@ -63,15 +61,17 @@ export class MyApp {
         return this.introductionService.hasSeenIntroduction().then((introduction) => {
             if (introduction != null) {
                 this.rootPage = BarcodeReaderPage;
+                this.adService.showAdBanner();                
             } else {
                 this.rootPage = IntroductionPage;
+                this.introductionService.onExitIntroduction().subscribe((value) => {
+                    this.adService.showAdBanner();
+                });
             }
         });
     }
 
     openPage(page) {
-        // Reset the content nav to have just this page
-        // we wouldn't want the back button to show in this scenario
         this.nav.push(page.component);
     }
 }

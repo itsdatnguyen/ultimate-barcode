@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
+import { IonicPage, ModalController } from 'ionic-angular';
 
 import { QrCodeDetailPage } from './../qr-code-detail/qr-code-detail';
 import { BarcodeReaderService, CodeEntry } from './../barcode-reader/barcode-reader.service';
@@ -15,8 +15,6 @@ export class QrCodeHistoryPage {
     qrCodes: CodeEntry[] = [];
 
     constructor(
-        public navCtrl: NavController, 
-        public navParams: NavParams,
         public modalController: ModalController,
         private barcodeReaderService: BarcodeReaderService,
         private appReadyService: AppReadyService

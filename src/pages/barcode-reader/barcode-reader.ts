@@ -7,7 +7,7 @@ import { QrCodeHistoryPage } from './../qr-code-history/qr-code-history';
 import { BarcodeHistoryPage } from './../barcode-history/barcode-history';
 import { BarcodeReaderService, CodeEntry } from './barcode-reader.service';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
+import { IonicPage, ModalController } from 'ionic-angular';
 
 import { BarcodeScanner, BarcodeScanResult } from "@ionic-native/barcode-scanner";
 
@@ -23,8 +23,6 @@ export class BarcodeReaderPage {
 
     constructor(
         private barcodeParserService: BarcodeParserService,
-        public navCtrl: NavController, 
-        public navParams: NavParams,
         private barcodeScanner: BarcodeScanner,
         private modalController: ModalController,
         private barcodeReaderService: BarcodeReaderService,

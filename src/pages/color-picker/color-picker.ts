@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import { IonicPage, NavParams, ViewController } from 'ionic-angular';
 
 import { Barcode } from './../barcode-generator/barcode-generator';
 
@@ -24,7 +24,6 @@ export class ColorPickerPage {
     action: ColorPickerAction = null;
 
     constructor(
-        public navCtrl: NavController, 
         public navParams: NavParams,
         private viewController: ViewController,
     ) {

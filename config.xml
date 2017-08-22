@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="1" id="io.ionic.starter" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Code Scanner</name>
-    <description>Scan barcodes and qr codes.</description>
+<widget android-versionCode="1" id="datquangnguyenwebsite.ultimatebarcode.tool" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Ultimate Barcode</name>
+    <description>The ultimate barcode app. Scan barcodes and Qr codes. Generate barcodes and Qr codes. Share and download your creations.</description>
     <author email="itsdatnguyen@gmail.com" href="https://itsdatnguyen.github.io/">Dat Nguyen</author>
     <content src="index.html" />
     <access origin="*" />

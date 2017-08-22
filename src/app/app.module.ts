@@ -22,11 +22,9 @@ import { BarcodeReaderService } from './../pages/barcode-reader/barcode-reader.s
 
 import { MyApp } from './app.component';
 import { AdService, IntroductionService, SQLStorageService, UserSettingsService, StatisticsService, BrowserService, AppReadyService, BarcodeSaverService } from "../shared/index";
-import { HomePageModule } from "../pages/home/home.module";
 
 
 export const AppPages = [
-    HomePageModule,
     IntroductionPageModule,
     BarcodeReaderPageModule,
     BarcodeHistoryPageModule,
