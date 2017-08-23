@@ -19,34 +19,38 @@ export class SQLStorageService {
             return this.SQLiteObject.executeSql('SELECT key, value FROM kv', []).then(data => {
                 const results = [];
                 for (let i = 0; i < data.rows.length; i++) {
-                    results.push(JSON.parse(data.rows.item(i).value));
+                    let row = JSON.parse(data.rows.item(i).value);
+                    results.push(row);
                 }
 
                 return results;
             });
         } else {
-            return new Promise((resolve) => {
-                const results = [];
-                this.storage.forEach((data) => {
-                    results.push(JSON.parse(data));
-                });
-
-                resolve(results);
+            const results = [];
+            
+            this.storage.forEach((data) => {
+                let row = JSON.parse(data);
+                results.push(row);
             });
+
+            return Promise.resolve(results);
         }
     }
 
     get(key: string) {
         if (this.SQLiteObject) {
             return this.SQLiteObject.executeSql('select key, value from kv where key = ? limit 1', [key]).then(data => {
-                if (data.rows.length > 0) {                    
-                    return JSON.parse(data.rows.item(0).value);
+                if (data.rows.length > 0) {     
+                    let item = JSON.parse(data.rows.item(0).value);
+                    return item;
                 }
             });
 
         } else {
-            return new Promise((resolve) => {
-                resolve(this.storage.get(key));
+            return this.storage.get(key)
+            .then((value) => {
+                let data = JSON.parse(value);
+                return data;
             });
         }
     }
@@ -56,24 +60,22 @@ export class SQLStorageService {
             return this.SQLiteObject.executeSql('delete from kv where key = ?', [key]);
         
         } else {
-            return new Promise((resolve) => {
-                resolve(this.storage.remove(key));
-            });
+            return this.storage.remove(key);
         }
     }
 
     set(key: string, value: any) {
+        let data = JSON.stringify(value);
         if (this.SQLiteObject) {
-            return this.SQLiteObject.executeSql('insert or replace into kv(key, value) values (?, ?)', [key, value]).then(data => {
-                if (data.rows.length > 0) {                
-                    return JSON.parse(data.rows.item(0).value);
+            return this.SQLiteObject.executeSql('insert or replace into kv(key, value) values (?, ?)', [key, data]).then(data => {
+                if (data.rows.length > 0) {   
+                    let newValue = JSON.parse(data.rows.item(0).value);              
+                    return newValue;
                 }
             });
 
         } else {
-            return new Promise((resolve) => {
-                resolve(this.storage.set(key, value));
-            });
+            return this.storage.set(key, data);
         }
     }
 

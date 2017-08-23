@@ -24,3 +24,8 @@ $ ionic cordova run ios
 
 Substitute ios for android if not on a Mac.
 
+Sign unsigned apk
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ultimate-barcode.keystore android-release-unsigned.apk DatQuangNguyen
+
+Zip align to optimize apk
+zipalign -v 4 android-release-unsigned.apk UltimateBarcode.apk

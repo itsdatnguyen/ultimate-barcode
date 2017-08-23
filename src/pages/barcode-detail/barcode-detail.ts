@@ -4,7 +4,7 @@ import { IonicPage, NavParams, AlertController, ToastController, ViewController,
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { Clipboard } from '@ionic-native/clipboard';
 
-import { BarcodeSaverService, BrowserService, AdService } from './../../shared';
+import { ImageSaverService, BrowserService, AdService } from './../../shared';
 import { BarcodeDetailOptionsPage, BarcodeDetailOptions } from './../barcode-detail-options/barcode-detail-options';
 import { CodeEntry } from './../barcode-reader/barcode-reader.service';
 
@@ -20,7 +20,7 @@ export class BarcodeDetailPage {
     barcode: CodeEntry = null;
 
     constructor(
-        private barcodeSaverService: BarcodeSaverService,
+        private imageSaverService: ImageSaverService,
         public navParams: NavParams,
         private viewController: ViewController,
         private browser: BrowserService,
@@ -33,7 +33,7 @@ export class BarcodeDetailPage {
     ) {
     }
 
-    ionViewDidLoad() {
+    ionViewWillEnter() {
         this.barcode = this.navParams.data;
     }
 
@@ -44,7 +44,7 @@ export class BarcodeDetailPage {
     shareClicked($event) {
         this.social.share(this.barcode.code, 'My Barcode', this.getBarcodeImageSrc())
         .then((value) => {
-            this.adService.showInterstitialBanner();
+            this.adService.showInterstitialAd();
         })
     } 
 
@@ -55,34 +55,38 @@ export class BarcodeDetailPage {
             if (option != null) {
                 switch (option) {
                     case BarcodeDetailOptions.Download:
-                        this.barcodeSaverService.saveBarcodeAsImage(this.getBarcodeImageSrc());
+                        this.imageSaverService.saveBase64ToGallery({
+                            base64: this.getBarcodeImageSrc(),
+                            filePrefix: 'Barcode_',
+                            description: 'Barcode'
+                        });
                         break;
 
                     case BarcodeDetailOptions.Open:
                         this.browser.openInBrowser(this.barcode.code)
                         .then((value) => {
-                            this.adService.showInterstitialBanner();
+                            this.adService.showInterstitialAd();
                         });
                         break;
 
                     case BarcodeDetailOptions.OpenInBrowser:
                         this.browser.openInNativeBrowser(this.barcode.code)
                         .then((value) => {
-                            this.adService.showInterstitialBanner();
+                            this.adService.showInterstitialAd();
                         });
                         break;
 
                     case BarcodeDetailOptions.SearchGoogle:
                         this.browser.openGoogleSearch(this.barcode.code)
                         .then((value) => {
-                            this.adService.showInterstitialBanner();
+                            this.adService.showInterstitialAd();
                         });
                         break;
 
                     case BarcodeDetailOptions.SearchUpcIndex:
                         this.browser.openInBrowser(`http://www.upcindex.com/${this.barcode.code}`)
                         .then((value) => {
-                            this.adService.showInterstitialBanner();
+                            this.adService.showInterstitialAd();
                         });
                         break;
 

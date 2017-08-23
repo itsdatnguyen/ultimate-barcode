@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavParams, ViewController } from 'ionic-angular';
 
-import { Barcode } from './../barcode-generator/barcode-generator';
+import { Barcode } from './../barcode-generator/barcode';
 
 export enum ColorPickerAction {
     LineColor,

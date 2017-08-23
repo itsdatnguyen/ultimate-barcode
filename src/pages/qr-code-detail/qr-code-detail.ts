@@ -1,13 +1,12 @@
-import { AdService } from './../../shared/ad.service';
-import { QRCodeGeneratorService } from './../qr-code-generator/qr-code-generator.service';
-import { BrowserService } from './../../shared/browser.service';
-import { QrCodeDetailOptionsPage, QrCodeDetailOption } from './../qr-code-detail-options/qr-code-detail-options';
-import { SocialSharing } from '@ionic-native/social-sharing';
-import { ToastController, PopoverController } from 'ionic-angular';
-import { CodeEntry } from './../barcode-reader/barcode-reader.service';
-import { Clipboard } from '@ionic-native/clipboard';
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavParams, AlertController, ViewController } from 'ionic-angular';
+import { IonicPage, NavParams, AlertController, ViewController, ToastController, PopoverController } from 'ionic-angular';
+
+import { SocialSharing } from '@ionic-native/social-sharing';
+import { Clipboard } from '@ionic-native/clipboard';
+
+import { BrowserService, AdService, ImageSaverService } from './../../shared';
+import { QrCodeDetailOptionsPage, QrCodeDetailOption } from './../qr-code-detail-options/qr-code-detail-options';
+import { CodeEntry } from './../barcode-reader/barcode-reader.service';
 
 @IonicPage()
 @Component({
@@ -22,7 +21,7 @@ export class QrCodeDetailPage {
 
     constructor(
         public navParams: NavParams,
-        private qrCodeGeneratorService: QRCodeGeneratorService,
+        private imageSaverService: ImageSaverService,
         private viewController: ViewController,
         private toastController: ToastController,
         private alertController: AlertController,
@@ -34,7 +33,7 @@ export class QrCodeDetailPage {
         ) {
     }
 
-    ionViewDidLoad() {
+    ionViewWillEnter() {
         this.qrCode = this.navParams.data;
     }
 
@@ -45,7 +44,7 @@ export class QrCodeDetailPage {
     shareClicked($event) {
         this.social.share(this.qrCode.code, 'My Qr Code!', this.getQrImage().src)
         .then(() => {
-            this.adService.showInterstitialBanner()
+            this.adService.showInterstitialAd()
         });
     }
 
@@ -64,21 +63,21 @@ export class QrCodeDetailPage {
                     case QrCodeDetailOption.Open:
                         this.browser.openInBrowser(this.qrCode.code)
                         .then((value) => {
-                            this.adService.showInterstitialBanner();
+                            this.adService.showInterstitialAd();
                         });
                         break;
 
                     case QrCodeDetailOption.OpenInBrowser: 
                         this.browser.openInNativeBrowser(this.qrCode.code)
                         .then((value) => {
-                            this.adService.showInterstitialBanner();
+                            this.adService.showInterstitialAd();
                         });
                         break;
 
                     case QrCodeDetailOption.Search:
                         this.browser.openGoogleSearch(this.qrCode.code)
                         .then((value) => {
-                            this.adService.showInterstitialBanner();
+                            this.adService.showInterstitialAd();
                         });
                         break;
                 }
@@ -118,8 +117,11 @@ export class QrCodeDetailPage {
     }
 
     saveQRCodeAsImage(): Promise<any> {
-        let imageElement = this.getQrImage();
-        return this.qrCodeGeneratorService.saveQRCodeAsImage(imageElement.src);
+        return this.imageSaverService.saveBase64ToGallery({
+            base64: this.getQrImage().src,
+            filePrefix: 'QrCode_',
+            description: 'Qr Code'
+        });
     }
 
     getQrImage(): any {

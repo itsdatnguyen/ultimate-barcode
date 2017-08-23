@@ -1,3 +1,19 @@
+export class Barcode {
+    
+    constructor(
+        public code: string,
+        public elementType: string,
+        public format: string,
+        public color: string,
+        public fontSize: number,
+        public textPosition: 'top' | 'bottom',
+        public backgroundColor: string,
+        public valid: boolean,
+    ) {
+
+    }
+}
+
 export enum BarcodeFormat {
     CODE128 = 'CODE128',
     CODE128A = 'CODE128A',

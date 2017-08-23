@@ -1,3 +1,4 @@
+import { Barcode } from './barcode';
 import { AdService } from './../../shared/ad.service';
 import { ColorPickerPage, ColorPickerParams, ColorPickerAction } from './../color-picker/color-picker';
 import { Component, ViewChild } from '@angular/core';
@@ -5,24 +6,9 @@ import { IonicPage, PopoverController } from 'ionic-angular';
 import { SocialSharing } from '@ionic-native/social-sharing';
 
 import { BarcodeDetailOptionsPage, BarcodeDetailOptions } from './../barcode-detail-options/barcode-detail-options';
-import { BarcodeSaverService, BrowserService } from './../../shared';
+import { ImageSaverService, BrowserService } from './../../shared';
 import { BarcodeFormat } from "./barcode";
-
-export class Barcode {
-
-    constructor(
-        public code: string,
-        public elementType: string,
-        public format: string,
-        public color: string,
-        public fontSize: number,
-        public textPosition: 'top' | 'bottom',
-        public backgroundColor: string,
-        public valid: boolean,
-    ) {
-
-    }
-}
+import { BarcodeGeneratorStorageService } from "./barcode-generator-storage.service";
 
 @IonicPage()
 @Component({
@@ -33,7 +19,7 @@ export class BarcodeGeneratorPage {
 
     @ViewChild('barcodeElement') barcodeElement: any;    
 
-    barcode = new Barcode('1234', 'img', 'CODE128', '#000000', 20, 'bottom', '#ffffff', true);
+    barcode = null;
     barcodeTypes: string[] = this.initializeFormatTypes();
 
     barcodeInputColor = 'primary';
@@ -41,17 +27,31 @@ export class BarcodeGeneratorPage {
     constructor(
         private social: SocialSharing,
         private popoverController: PopoverController,
-        private barcodeSaverService: BarcodeSaverService,
+        private imageSaverService: ImageSaverService,
         private browser: BrowserService,
         private adService: AdService,
+        private barcodeGeneratorStorageService: BarcodeGeneratorStorageService,
     ) {
-        
+        this.resetBarcode();
+    }
+
+    ionViewWillEnter() {
+        this.barcodeGeneratorStorageService.getBarcodes()
+        .then((value: Barcode) => {
+            if (value != null) {
+                this.barcode = value;
+            }
+        });
+    }
+
+    ionViewWillLeave() {
+        this.barcodeGeneratorStorageService.storeBarcode(this.barcode);
     }
 
     shareClicked($event) {
         this.social.share(this.barcode.code, 'My Barcode', this.getBarcodeImageSrc())
         .then(() => {
-            this.adService.showInterstitialBanner()
+            this.adService.showInterstitialAd();
         });
     }
 
@@ -62,34 +62,38 @@ export class BarcodeGeneratorPage {
             if (option != null) {
                 switch (option) {
                     case BarcodeDetailOptions.Download:
-                        this.barcodeSaverService.saveBarcodeAsImage(this.getBarcodeImageSrc());
+                        this.imageSaverService.saveBase64ToGallery({
+                            base64: this.getBarcodeImageSrc(),
+                            filePrefix: 'Barcode_',
+                            description: 'Barcode'
+                        });                        
                         break;
 
                     case BarcodeDetailOptions.Open:
                         this.browser.openInBrowser(this.barcode.code)
                         .then((value) => {
-                            this.adService.showInterstitialBanner();
+                            this.adService.showInterstitialAd();
                         });
                         break;
 
                     case BarcodeDetailOptions.OpenInBrowser:
                         this.browser.openInNativeBrowser(this.barcode.code)
                         .then((value) => {
-                            this.adService.showInterstitialBanner();
+                            this.adService.showInterstitialAd();
                         });
                         break;
 
                     case BarcodeDetailOptions.SearchGoogle:
                         this.browser.openGoogleSearch(this.barcode.code)
                         .then((value) => {
-                            this.adService.showInterstitialBanner();
+                            this.adService.showInterstitialAd();
                         });
                         break;
 
                     case BarcodeDetailOptions.SearchUpcIndex:
                         this.browser.openInBrowser(`http://www.upcindex.com/${this.barcode.code}`)
                         .then((value) => {
-                            this.adService.showInterstitialBanner();
+                            this.adService.showInterstitialAd();
                         });
                         break;
 
@@ -101,6 +105,14 @@ export class BarcodeGeneratorPage {
         morePopover.present({
             ev: $event
         });
+    }
+
+    resetFormClicked() {
+        this.resetBarcode();
+    }
+
+    resetBarcode() {
+        this.barcode = new Barcode('1234', 'img', 'CODE128', '#000000', 20, 'bottom', '#ffffff', true);
     }
 
     barcodeCodeChanged($event) {

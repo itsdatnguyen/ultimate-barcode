@@ -4,38 +4,51 @@ import { AdMobFree, AdMobFreeBannerConfig, AdMobFreeInterstitialConfig } from '@
 @Injectable()
 export class AdService {
 
-    constructor(private adMobFree: AdMobFree) {
-        
-    }
+    constructor(private adMobFree: AdMobFree) { }
 
-    showAdBanner(): Promise<any> {  
+    prepareBannerAd(): Promise<any> {
         const bannerConfig: AdMobFreeBannerConfig = {
             id: 'ca-app-pub-6288801115616154/7110154053',
-            autoShow: true,
+            autoShow: false,
         };
         this.adMobFree.banner.config(bannerConfig); 
 
-        return new Promise((resolve) => {
-            resolve();
-        });
-        /*
         return this.adMobFree.banner.prepare()
         .catch((rejected) => {
-            console.error(`Error, could not show ad banner: ${rejected}`);
-        });
-        */
+            console.error(`Error, could not prepare banner ad: ${rejected}`);
+        });    
     }
 
-    showInterstitialBanner(): Promise<any> {
+    showBannerAd(): Promise<any> {  
+        return this.adMobFree.banner.show()
+        .catch((rejected) => {
+            console.error(`Error, could not show banner ad: ${rejected}`);
+        });    
+    }
+
+    prepareInterstitialAd(): Promise<any> {
         const interstitial: AdMobFreeInterstitialConfig = {
             id: 'ca-app-pub-6288801115616154/7769302054',
-            autoShow: true,
+            autoShow: false,
         };
         this.adMobFree.interstitial.config(interstitial);
-
+        
         return this.adMobFree.interstitial.prepare()
         .catch((rejected) => {
+            console.error(`Error, could not prepare interstitial ad: ${rejected}`);
+        });   
+    }
+
+    /**
+     * Show the already prepared interstitial ad then prepare a new one.
+     */
+    showInterstitialAd(): Promise<any> {
+        return this.adMobFree.interstitial.show()
+        .then((value) => {
+            return this.adMobFree.interstitial.prepare();
+        })
+        .catch((rejected) => {
             console.error(`Error, could not show interstitial ad: ${rejected}`);
-        });
+        });           
     }
 }

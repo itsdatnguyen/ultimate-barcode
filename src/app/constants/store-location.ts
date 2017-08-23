@@ -1,0 +1,1 @@
+export const ANDROID_STORE_URL = 'https://play.google.com/store/apps/details?id=datquangnguyenwebsite.ultimatebarcode.tool&hl=en';

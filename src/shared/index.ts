@@ -4,5 +4,6 @@ export * from './introduction.service';
 export * from './statistics.service';
 export * from './browser.service';
 export * from './app-ready.service';
-export * from './barcode-saver.service';
+export * from './image-saver.service';
 export * from './ad.service';
+export * from './barcode-parser.service';

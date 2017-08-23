@@ -35,7 +35,7 @@ export class QrCodeDetailOptionsPage {
         private viewController: ViewController) {
     }
 
-    ionViewDidLoad() {
+    ionViewWillEnter() {
         this.code = this.navParams.data.code;
     }
 

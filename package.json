@@ -7,9 +7,8 @@
     "scripts": {
         "clean": "ionic-app-scripts clean",
         "build": "ionic-app-scripts build",
-        "android-run": "ionic cordova run android",
+        "build-android": "ionic cordova build android --aot --prod --release --minifyjs --minifycss --optimizejs",
         "android-run-prod": "ionic cordova run android --prod --aot --minifyjs --minifycss --optimizejs",
-        "build-android": "ionic cordova build --release android",
         "lint": "ionic-app-scripts lint",
         "ionic:build": "ionic-app-scripts build",
         "ionic:serve": "ionic-app-scripts serve"
@@ -24,6 +23,7 @@
         "@angular/platform-browser": "4.1.3",
         "@angular/platform-browser-dynamic": "4.1.3",
         "@ionic-native/admob-free": "^4.1.0",
+        "@ionic-native/android-permissions": "^4.1.0",
         "@ionic-native/app-rate": "^4.1.0",
         "@ionic-native/barcode-scanner": "^4.1.0",
         "@ionic-native/base64-to-gallery": "^4.1.0",
@@ -42,6 +42,7 @@
         "cordova-base64-to-gallery": "^4.1.2",
         "cordova-clipboard": "^1.0.0",
         "cordova-plugin-admob-free": "^0.10.0",
+        "cordova-plugin-android-permissions": "^1.0.0",
         "cordova-plugin-apprate": "^1.3.0",
         "cordova-plugin-browsertab": "^0.2.0",
         "cordova-plugin-compat": "^1.1.0",
@@ -89,7 +90,8 @@
             "cordova-clipboard": {},
             "cordova-plugin-apprate": {},
             "cordova-plugin-x-socialsharing": {},
-            "cordova-plugin-file-opener2": {}
+            "cordova-plugin-file-opener2": {},
+            "cordova-plugin-android-permissions": {}
         },
         "platforms": [
             "android"

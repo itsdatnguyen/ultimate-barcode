@@ -11,7 +11,7 @@ export class IntroductionService {
     constructor(private sqlStorageService: SQLStorageService) { }
 
     setIntroductionStatus(hasSeenIntroduction: boolean): void {
-        this.sqlStorageService.set(this.INTRODUCTION_STATUS_KEY, hasSeenIntroduction.toString());
+        this.sqlStorageService.set(this.INTRODUCTION_STATUS_KEY, hasSeenIntroduction);
     }
 
     hasSeenIntroduction(): Promise<any> {

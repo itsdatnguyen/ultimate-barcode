@@ -1,6 +1,9 @@
+import { TestPage } from './../pages/test/test';
+import { SocialSharing } from '@ionic-native/social-sharing';
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 
+import { AppRate } from '@ionic-native/app-rate';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
@@ -11,6 +14,8 @@ import { BarcodeReaderPage } from './../pages/barcode-reader/barcode-reader';
 import { QrCodeGeneratorPage } from './../pages/qr-code-generator/qr-code-generator';
 import { IntroductionPage } from "../pages/introduction/introduction";
 
+import { ANDROID_STORE_URL } from "./constants/store-location";
+
 @Component({
     templateUrl: 'app.html'
 })
@@ -19,7 +24,11 @@ export class MyApp {
 
     rootPage: any = BarcodeReaderPage;
 
-    pages: Array<{title: string, component: any}>;
+    pages: Array<{title: string, component: any}> = [
+        { title: 'QR Generator', component: QrCodeGeneratorPage },
+        { title: 'Barcode Generator', component: BarcodeGeneratorPage },
+        //{ title: 'Test Page', component: TestPage },        
+    ];
 
     constructor(
         public platform: Platform, 
@@ -29,13 +38,10 @@ export class MyApp {
         private sqlStorageService: SQLStorageService,
         private appReadyService: AppReadyService,
         private adService: AdService,
+        private appRate: AppRate,
+        private social: SocialSharing
     ) {
         this.initializeApp();
-
-        this.pages = [
-            { title: 'QR Generator', component: QrCodeGeneratorPage },
-            { title: 'Barcode Generator', component: BarcodeGeneratorPage },
-        ];
     }
 
     initializeApp() {
@@ -45,6 +51,14 @@ export class MyApp {
             // Here you can do any higher level native things you might need.
             this.statusBar.styleDefault();
             this.splashScreen.hide();      
+
+            if (this.appRate.preferences != null) {
+                this.appRate.preferences.storeAppURL.android = ANDROID_STORE_URL;
+            }
+
+            // prepare ads but show them later after introduction
+            this.adService.prepareBannerAd();
+            this.adService.prepareInterstitialAd();
                         
             this.sqlStorageService.initializeDatabase()
             .then((value) => {
@@ -60,15 +74,19 @@ export class MyApp {
     seenIntroduction(): Promise<any> {
         return this.introductionService.hasSeenIntroduction().then((introduction) => {
             if (introduction != null) {
+                this.adService.showBannerAd();                
                 this.rootPage = BarcodeReaderPage;
-                this.adService.showAdBanner();                
             } else {
-                this.rootPage = IntroductionPage;
                 this.introductionService.onExitIntroduction().subscribe((value) => {
-                    this.adService.showAdBanner();
+                    this.adService.showBannerAd();
                 });
+                this.rootPage = IntroductionPage;
             }
         });
+    }
+
+    navShareClicked($event) {
+        this.social.share(`Check out this cool free barcode/qr scanner and generator app I found! ${ANDROID_STORE_URL}`, 'This app is really useful');
     }
 
     openPage(page) {

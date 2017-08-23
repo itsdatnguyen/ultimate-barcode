@@ -10,6 +10,8 @@ import { Clipboard } from '@ionic-native/clipboard';
 import { AppRate } from '@ionic-native/app-rate';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { FileOpener } from '@ionic-native/file-opener';
+import { AndroidPermissions } from '@ionic-native/android-permissions';
+
 
 @NgModule({
     declarations: [
@@ -22,6 +24,7 @@ import { FileOpener } from '@ionic-native/file-opener';
         
     ],
     providers: [
+        AndroidPermissions,
         StatusBar,
         SplashScreen,
         SQLite,
@@ -30,7 +33,7 @@ import { FileOpener } from '@ionic-native/file-opener';
         Clipboard,
         AppRate,
         SocialSharing,
-        FileOpener
+        FileOpener,
     ],
 })
 export class IonicNativePluginModule {}

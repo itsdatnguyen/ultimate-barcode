@@ -34,8 +34,8 @@ export class BarcodeReaderService {
         let sqlCommand = `INSERT INTO ${this.BARCODE_TABLE_NAME} (code, format, date) VALUES ("${codeEntry.code}", "${codeEntry.format}", ${codeEntry.date})`;
         return this.sqlStorageService.SQLiteObject.executeSql(sqlCommand, {})
         .then((data) => {
-            this.getAllBarcodes().then((barcodes) => {
-                this._barcodeChanged.emit(barcodes); 
+            return this.getAllBarcodes().then((barcodes) => {
+                return this._barcodeChanged.emit(barcodes); 
             });
         })
         .catch((rejected) => {
@@ -47,8 +47,8 @@ export class BarcodeReaderService {
         let sqlCommand = `INSERT INTO ${this.QR_CODE_TABLE_NAME} (code, format, date) VALUES ("${codeEntry.code}", "${codeEntry.format}", ${codeEntry.date})`;
         return this.sqlStorageService.SQLiteObject.executeSql(sqlCommand, {})
         .then((data) => {
-            this.getAllQRCodes().then((qrCodes) => {
-                this._qrCodeChanged.emit(qrCodes); 
+            return this.getAllQRCodes().then((qrCodes) => {
+                return this._qrCodeChanged.emit(qrCodes); 
             });
         })
         .catch((rejected) => {
@@ -59,8 +59,8 @@ export class BarcodeReaderService {
     deleteBarcode(id: number): Promise<any> {
         return this.sqlStorageService.SQLiteObject.executeSql(`DELETE FROM ${this.BARCODE_TABLE_NAME} WHERE rowid=${id}`, {})
         .then((data) => {
-            this.getAllBarcodes().then((barcodes) => {
-                this._barcodeChanged.emit(barcodes); 
+            return this.getAllBarcodes().then((barcodes) => {
+                return this._barcodeChanged.emit(barcodes); 
             });
         })
         .catch((rejected) => {
@@ -71,8 +71,8 @@ export class BarcodeReaderService {
     deleteQrCode(id: number): Promise<any> {
         return this.sqlStorageService.SQLiteObject.executeSql(`DELETE FROM ${this.QR_CODE_TABLE_NAME} WHERE rowid=${id}`, {})
         .then((data) => {
-            this.getAllQRCodes().then((qrCodes) => {
-                this._qrCodeChanged.emit(qrCodes); 
+            return this.getAllQRCodes().then((qrCodes) => {
+                return this._qrCodeChanged.emit(qrCodes); 
             });
         })
         .catch((rejected) => {

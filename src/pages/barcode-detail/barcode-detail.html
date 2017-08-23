@@ -22,7 +22,7 @@
         <ion-card-header>
             <h1 class="card-title">Details</h1>
         </ion-card-header>
-        <ion-card-content *ngIf="barcode !== null">
+        <ion-card-content padding *ngIf="barcode !== null">
             <div padding-bottom (press)="codePressed($event)">
                 <h2 class="card-subtitle">Content</h2>
                 <p class="card-content">{{ barcode.code }}</p>

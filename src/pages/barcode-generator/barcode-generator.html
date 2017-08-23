@@ -29,7 +29,7 @@
     </ion-card>
     <ion-card>
         <ion-card-header>
-            Options
+            <h1>Options</h1>
         </ion-card-header>
         <ion-card-content>
             <ion-grid>
@@ -39,6 +39,12 @@
                             <ion-label [color]="barcodeInputColor">Code</ion-label>
                             <ion-input [color]="barcodeInputColor" type="text" [ngModel]="barcode.code"
                                 (ngModelChange)="barcodeCodeChanged($event)"></ion-input>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col col-12>
+                        <ion-item>
+                            <ion-label color="primary">Font Size</ion-label>
+                            <ion-input color="primary" type="text" [(ngModel)]="barcode.fontSize"></ion-input>
                         </ion-item>
                     </ion-col>
                     <ion-col col-12>
@@ -54,31 +60,6 @@
                     </ion-col>
                     <ion-col col-12>
                         <ion-item>
-                            <ion-label color="primary">Line Color</ion-label>
-                            <ion-input color="primary" type="text" [(ngModel)]="barcode.color">
-                            </ion-input>
-                            <button ion-button icon-only item-right (click)="onBarcodeColorPaletteClicked($event)">
-                                <ion-icon name="color-palette"></ion-icon>                
-                            </button>
-                        </ion-item>
-                    </ion-col>
-                    <ion-col col-12>
-                        <ion-item>
-                            <ion-label color="primary">Background Color</ion-label>
-                            <ion-input color="primary" type="text" [(ngModel)]="barcode.backgroundColor"></ion-input>
-                            <button ion-button icon-only item-right (click)="onBarcodeBackgroundColorPaletteClicked($event)">
-                                <ion-icon name="color-palette"></ion-icon>                
-                            </button>
-                        </ion-item>
-                    </ion-col>
-                    <ion-col col-12>
-                        <ion-item>
-                            <ion-label color="primary">Font Size</ion-label>
-                            <ion-input color="primary" type="text" [(ngModel)]="barcode.fontSize"></ion-input>
-                        </ion-item>
-                    </ion-col>
-                    <ion-col col-12>
-                        <ion-item>
                             <ion-label color="primary">Text Position</ion-label>
                             <ion-select color="primary" [(ngModel)]="barcode.textPosition">
                                 <ion-option value="bottom">
@@ -90,8 +71,28 @@
                             </ion-select>
                         </ion-item>
                     </ion-col>
+                    <ion-col col-12>
+                        <ion-item>
+                            <ion-label color="primary">Line Color</ion-label>
+                            <ion-input color="primary" type="text" [(ngModel)]="barcode.color">
+                            </ion-input>
+                            <button ion-button icon-only item-right class="palette-button" (click)="onBarcodeColorPaletteClicked($event)">
+                                <ion-icon name="color-palette"></ion-icon>                
+                            </button>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col col-12>
+                        <ion-item>
+                            <ion-label color="primary">Background Color</ion-label>
+                            <ion-input color="primary" type="text" [(ngModel)]="barcode.backgroundColor"></ion-input>
+                            <button ion-button icon-only item-right class="palette-button" (click)="onBarcodeBackgroundColorPaletteClicked($event)">
+                                <ion-icon name="color-palette"></ion-icon>                
+                            </button>
+                        </ion-item>
+                    </ion-col>
                 </ion-row>
             </ion-grid>
+            <button ion-button (click)="resetFormClicked()">Reset Barcode</button>
         </ion-card-content>
     </ion-card>
 </ion-content>

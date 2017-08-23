@@ -14,18 +14,19 @@
     </ion-navbar>
 </ion-header>
 
-
 <ion-content padding>
     <ion-card>
         <ion-card-content>
             <ion-list>
-                <ion-item>Insert text to generate a QR Code</ion-item>
+                <h1 padding-vertical class="header-title">Insert text to generate a QR Code</h1>
                 <ion-item>
-                    <ion-label floating>Insert text here</ion-label>
-                    <ion-textarea class="large-textarea" type="text" cols="3" [(ngModel)]="text"></ion-textarea>
+                    <ion-label floating color="primary">Insert text here</ion-label>
+                    <ion-textarea class="large-textarea" color="primary" type="text" cols="3" [(ngModel)]="userInput"></ion-textarea>
                 </ion-item>
-            </ion-list>      
-            <button ion-button full (click)="generateQrCodeClicked($event)">Generate QR Code</button>         
+            </ion-list>  
+            <div padding-top>
+                <button ion-button full (click)="generateQrCodeClicked($event)">Generate QR Code</button>         
+            </div>    
         </ion-card-content>
     </ion-card>
     <ion-card padding class="flex justify-center">

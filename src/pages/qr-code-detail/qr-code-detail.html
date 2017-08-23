@@ -19,10 +19,10 @@
 
 <ion-content padding>
     <ion-card>
-        <ion-card-header class="card-title">
-            <h1>Details</h1>
+        <ion-card-header>
+            <h1 class="card-title">Details</h1>
         </ion-card-header>
-        <ion-card-content *ngIf="qrCode !== null">
+        <ion-card-content padding *ngIf="qrCode !== null">
             <div padding-bottom (press)="codePressed($event)">
                 <h2 class="card-subtitle">Data</h2>
                 <p class="card-content">{{ qrCode.code }}</p>

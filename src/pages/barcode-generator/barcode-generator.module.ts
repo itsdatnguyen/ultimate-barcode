@@ -3,6 +3,7 @@ import { IonicPageModule } from 'ionic-angular';
 import { NgxBarcodeModule } from 'ngx-barcode';
 
 import { BarcodeGeneratorPage } from './barcode-generator';
+import { BarcodeGeneratorStorageService } from "./barcode-generator-storage.service";
 
 @NgModule({
     declarations: [
@@ -13,7 +14,10 @@ import { BarcodeGeneratorPage } from './barcode-generator';
         NgxBarcodeModule,
     ],
     entryComponents: [
-        BarcodeGeneratorPage
+        BarcodeGeneratorPage,
+    ],
+    providers: [
+        BarcodeGeneratorStorageService,
     ]
 })
 export class BarcodeGeneratorPageModule {}
