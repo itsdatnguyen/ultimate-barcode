@@ -1,0 +1,14 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>Favourites</ion-title>
+    </ion-navbar>
+</ion-header>
+    
+<ion-tabs>
+    <ion-tab tabIcon="barcode" tabTitle="Barcode" 
+    [root]="barcodeFavouritesRoot"
+    [rootParams]="listConfig"></ion-tab>
+    <ion-tab tabIcon="qr-scanner" tabTitle="Qr Code" 
+    [root]="qrCodeFavouritesRoot"
+    [rootParams]="listConfig"></ion-tab>
+</ion-tabs>

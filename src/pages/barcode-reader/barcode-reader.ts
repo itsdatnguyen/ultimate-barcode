@@ -1,15 +1,16 @@
-import { BarcodeParserService } from './../../shared/barcode-parser.service';
-import { QrCodeDetailPage } from './../qr-code-detail/qr-code-detail';
-import { BarcodeDetailPage } from './../barcode-detail/barcode-detail';
-import { AppRate } from '@ionic-native/app-rate';
-import { StatisticsService } from './../../shared/statistics.service';
-import { QrCodeHistoryPage } from './../qr-code-history/qr-code-history';
-import { BarcodeHistoryPage } from './../barcode-history/barcode-history';
-import { BarcodeReaderService, CodeEntry } from './barcode-reader.service';
+import { CodeListOptions } from './../../shared/list';
 import { Component } from '@angular/core';
 import { IonicPage, ModalController } from 'ionic-angular';
 
+import { AppRate } from '@ionic-native/app-rate';
 import { BarcodeScanner, BarcodeScanResult } from "@ionic-native/barcode-scanner";
+
+import { StatisticsService, BarcodeParserService, BarcodeReaderService, CodeEntry } from './../../shared';
+import { QrCodeDetailPage } from './../qr-code-detail/qr-code-detail';
+import { BarcodeDetailPage } from './../barcode-detail/barcode-detail';
+import { QrCodeHistoryPage } from './../qr-code-history/qr-code-history';
+import { BarcodeHistoryPage } from './../barcode-history/barcode-history';
+
 
 @IonicPage()
 @Component({
@@ -17,6 +18,10 @@ import { BarcodeScanner, BarcodeScanResult } from "@ionic-native/barcode-scanner
   templateUrl: 'barcode-reader.html',
 })
 export class BarcodeReaderPage {
+
+    listConfig: CodeListOptions = {
+        onlyFavourites: false,
+    }
 
     barcodeHistoryRoot = BarcodeHistoryPage;
     qrCodeHistoryRoot = QrCodeHistoryPage;
@@ -81,6 +86,7 @@ export class BarcodeReaderPage {
 
     handleUPCCode(result: BarcodeScanResult): void {
         let entry: CodeEntry = {
+            rowid: -1,
             code: result.text,
             format: result.format,
             date: Date.now(),
@@ -88,23 +94,34 @@ export class BarcodeReaderPage {
 
         entry = this.barcodeParserService.sanitizeCodeEntry(entry);
 
-        this.barcodeReaderService.storeBarcode(entry);
-
-        let barcodeModal = this.modalController.create(BarcodeDetailPage, entry);
-        barcodeModal.present();
+        this.barcodeReaderService.storeBarcode(entry)
+        .then((insertMetadata) => {
+            return this.barcodeReaderService.getBarcode(insertMetadata.insertId);           
+        })
+        .then((code) => {
+            let barcodeModal = this.modalController.create(BarcodeDetailPage, code);
+            return barcodeModal.present();
+        });     
     }
 
     handleQRCode(result: BarcodeScanResult): void {    
         let entry: CodeEntry = {
+            rowid: -1,
             code: result.text,
             format: result.format,
             date: Date.now(),
         };
 
-        this.barcodeReaderService.storeQrCode(entry);
+        entry = this.barcodeParserService.sanitizeCodeEntry(entry);
 
-        let qrModal = this.modalController.create(QrCodeDetailPage, entry);
-        qrModal.present();
+        this.barcodeReaderService.storeQrCode(entry)
+        .then((insertMetadata) => {
+            return this.barcodeReaderService.getQrCode(insertMetadata.insertId);           
+        })
+        .then((code) => {
+            let qrModal = this.modalController.create(QrCodeDetailPage, code);
+            return qrModal.present();
+        });
     }
 
 }

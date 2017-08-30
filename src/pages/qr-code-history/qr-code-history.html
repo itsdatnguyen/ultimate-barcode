@@ -11,13 +11,15 @@
             <h2>Date</h2>
         </ion-row>
     </ion-row>
-    <p text-center *ngIf="qrCodes.length === 0">No Qr Codes found</p>
-    <ion-list [virtualScroll]="qrCodes"
-        [approxItemHeight]="'55px'">
-        <ion-item *virtualItem="let code" (tap)="onRowClicked(code)">  
+    <div class="flex justify-center" *ngIf="gettingData === true">
+        <ion-spinner></ion-spinner>
+    </div>
+    <p text-center *ngIf="qrCodes.length === 0 && gettingData === false">No Qr Codes scanned</p>
+    <ion-list>
+        <ion-item tappable *ngFor="let code of qrCodes" (click)="onRowClicked(code)">  
             <ion-row>
                 <ion-col col-8 class="row-scroll-x">
-                    <p>{{ code.code }}</p>
+                    <p><ion-icon class="favourite-list-icon" *ngIf="code.favourite === 1" name="star"></ion-icon>{{ code.code }}</p>
                 </ion-col>
                 <ion-col col-4 class="row-scroll-x">
                     <p>{{ code.date | date }}

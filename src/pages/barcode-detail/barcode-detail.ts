@@ -1,12 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavParams, AlertController, ToastController, ViewController, PopoverController } from 'ionic-angular';
+import { IonicPage, NavParams, AlertController, ToastController, ViewController, PopoverController, NavController } from 'ionic-angular';
 
 import { SocialSharing } from '@ionic-native/social-sharing';
-import { Clipboard } from '@ionic-native/clipboard';
 
-import { ImageSaverService, BrowserService, AdService } from './../../shared';
+import { ImageSaverService, BrowserService, AdService, CodeEntry, CopyPasteService, BarcodeReaderService, FavouritesService } from './../../shared';
 import { BarcodeDetailOptionsPage, BarcodeDetailOptions } from './../barcode-detail-options/barcode-detail-options';
-import { CodeEntry } from './../barcode-reader/barcode-reader.service';
 
 @IonicPage()
 @Component({
@@ -20,14 +18,17 @@ export class BarcodeDetailPage {
     barcode: CodeEntry = null;
 
     constructor(
-        private imageSaverService: ImageSaverService,
-        public navParams: NavParams,
-        private viewController: ViewController,
+        private imageSaver: ImageSaverService,
+        private favourites: FavouritesService,
+        private barcodeReader: BarcodeReaderService,
+        private navController: NavController,
+        private navParams: NavParams,
+        private view: ViewController,
         private browser: BrowserService,
-        private alertController: AlertController,
-        private toastController: ToastController,
-        private popoverController: PopoverController,
-        private clipboard: Clipboard,
+        private alert: AlertController,
+        private toast: ToastController,
+        private popover: PopoverController,
+        private copyPaste: CopyPasteService,
         private social: SocialSharing,
         private adService: AdService,
     ) {
@@ -38,7 +39,45 @@ export class BarcodeDetailPage {
     }
 
     close() {
-        this.viewController.dismiss();
+        this.view.dismiss();
+    }
+
+    onFavouriteClicked() {
+        if (this.barcode.favourite === 1) {
+            this.barcode.favourite = 0;
+            
+            this.favourites.setBarcodeFavourite(this.barcode.rowid, 0)
+            .then((value) => {
+                let removedFavouriteToast = this.toast.create({
+                    message: 'Removed from favourites',
+                    duration: 2000
+                });
+                return removedFavouriteToast.present();
+            });
+        } else {
+            this.barcode.favourite = 1;
+
+            this.favourites.setBarcodeFavourite(this.barcode.rowid, 1)
+            .then((value) => {
+                let addedFavouriteToast = this.toast.create({
+                    message: 'Added to favourites',
+                    duration: 2000
+                });
+                return addedFavouriteToast.present();
+            });
+        }
+    }
+
+    getButtonColor(): string {
+        if (this.isFavourite() === true) {
+            return 'primary';
+        } else {
+            return 'light';
+        }
+    }
+
+    isFavourite(): boolean {     
+        return this.barcode.favourite === 1;
     }
 
     shareClicked($event) {
@@ -49,13 +88,13 @@ export class BarcodeDetailPage {
     } 
 
     moreClicked($event) {
-        let morePopover = this.popoverController.create(BarcodeDetailOptionsPage);
+        let morePopover = this.popover.create(BarcodeDetailOptionsPage);
 
         morePopover.onDidDismiss((option: BarcodeDetailOptions, role: string) => {
             if (option != null) {
                 switch (option) {
                     case BarcodeDetailOptions.Download:
-                        this.imageSaverService.saveBase64ToGallery({
+                        this.imageSaver.saveBase64ToGallery({
                             base64: this.getBarcodeImageSrc(),
                             filePrefix: 'Barcode_',
                             description: 'Barcode'
@@ -63,31 +102,47 @@ export class BarcodeDetailPage {
                         break;
 
                     case BarcodeDetailOptions.Open:
-                        this.browser.openInBrowser(this.barcode.code)
-                        .then((value) => {
-                            this.adService.showInterstitialAd();
-                        });
+                        this.browser.openInBrowser(this.barcode.code);
                         break;
 
                     case BarcodeDetailOptions.OpenInBrowser:
-                        this.browser.openInNativeBrowser(this.barcode.code)
-                        .then((value) => {
-                            this.adService.showInterstitialAd();
-                        });
+                        this.browser.openInNativeBrowser(this.barcode.code);
                         break;
 
                     case BarcodeDetailOptions.SearchGoogle:
-                        this.browser.openGoogleSearch(this.barcode.code)
-                        .then((value) => {
-                            this.adService.showInterstitialAd();
-                        });
+                        this.browser.openGoogleSearch(this.barcode.code);
                         break;
 
                     case BarcodeDetailOptions.SearchUpcIndex:
-                        this.browser.openInBrowser(`http://www.upcindex.com/${this.barcode.code}`)
-                        .then((value) => {
-                            this.adService.showInterstitialAd();
+                        this.browser.openInBrowser(`http://www.upcindex.com/${this.barcode.code}`);
+                        break;
+
+                    case BarcodeDetailOptions.Delete: 
+                        let deleteAlert = this.alert.create({
+                            title: 'Delete',
+                            message: 'Are you sure you want to delete this Barcode?',
+                            buttons: [
+                                {
+                                    text: 'Cancel',
+                                    role: 'cancel',
+                                }, 
+                                {
+                                    text: 'Delete',
+                                    role: 'delete',
+                                    handler: () => {
+                                        this.barcodeReader.deleteBarcode(this.barcode.rowid)
+                                        .then((value) => {
+                                            if (this.barcode.favourite === 1) {
+                                                this.favourites.favouriteBarcodeChangeEmit();
+                                            }
+                                        });
+                                        this.navController.pop();
+                                    }
+                                }
+                            ]
                         });
+
+                        deleteAlert.present();
                         break;
 
                     default:
@@ -101,30 +156,9 @@ export class BarcodeDetailPage {
     }
 
     codePressed($event) {
-        let copyAlert = this.alertController.create({
-            title: 'Copy',
-            message: 'Do you want to copy this text?',
-            buttons: [
-                {
-                    text: 'No'
-                },
-                {
-                    text: 'Yes',
-                    handler: () => {
-                        this.clipboard.copy(this.barcode.code).then((value) => {
-                            let copySuccessToast = this.toastController.create({
-                                message: 'Text Copied!',
-                                duration: 2000
-                            });
-
-                            copySuccessToast.present();
-                        });
-                    }
-                }
-            ]
+        this.copyPaste.copy(this.barcode.code, {
+            askUser: true
         });
-
-        copyAlert.present();
     }
 
     getBarcodeImageSrc(): string {

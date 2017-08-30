@@ -16,9 +16,11 @@
 
 <ion-content padding>
     <ion-card>
+        <ion-card-header>
+            <h1 padding-vertical class="header-title">Insert text to generate a QR Code</h1>
+        </ion-card-header>
         <ion-card-content>
-            <ion-list>
-                <h1 padding-vertical class="header-title">Insert text to generate a QR Code</h1>
+            <ion-list>   
                 <ion-item>
                     <ion-label floating color="primary">Insert text here</ion-label>
                     <ion-textarea class="large-textarea" color="primary" type="text" cols="3" [(ngModel)]="userInput"></ion-textarea>

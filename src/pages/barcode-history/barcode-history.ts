@@ -1,8 +1,8 @@
-import { AppReadyService } from './../../shared/app-ready.service';
-import { BarcodeDetailPage } from './../barcode-detail/barcode-detail';
-import { BarcodeReaderService, CodeEntry } from './../barcode-reader/barcode-reader.service';
 import { Component } from '@angular/core';
-import { IonicPage, ModalController, Platform } from 'ionic-angular';
+import { IonicPage, ModalController, Platform, NavParams } from 'ionic-angular';
+
+import { AppReadyService, BarcodeReaderService, CodeEntry, FavouritesService, CodeListOptions } from './../../shared';
+import { BarcodeDetailPage } from './../barcode-detail/barcode-detail';
 
 @IonicPage()
 @Component({
@@ -12,47 +12,69 @@ import { IonicPage, ModalController, Platform } from 'ionic-angular';
 export class BarcodeHistoryPage {
 
     barcodes: CodeEntry[] = [];
+    config: CodeListOptions;
+    gettingData: boolean = true;
 
     constructor(
         public modalController: ModalController,
+        private navParams: NavParams,
         private platform: Platform,
         private barcodeReaderService: BarcodeReaderService,
-        private appReadyService: AppReadyService
+        private appReadyService: AppReadyService,
+        private favouritesService: FavouritesService,
     ) {
     }
 
     ionViewWillEnter() {
-        if (this.platform.is('core')) {
+        this.config = this.navParams.data;
+        this.gettingData = true;
+        
+        if (this.platform.is('core') || this.platform.is('mobileweb')) {
             this.barcodes = [
-                { code: 'This is pretty cool', format: 'CODE128', date: 49583049053 },
-                { code: '45645645657', format: 'UPC', date: 49583044564456 },
-                { code: 'https://itsdatnguyen.github.io/utility/welcome', format: 'CODE128', date: 49583049564053 },
-                { code: 'https://www.youtube.com/watch?v=hY7m5jjJ9mM', format: 'CODE128', date: 4958304845653 },
+                { rowid: 0, code: 'This is pretty cool', format: 'CODE128', date: 49583049053, favourite: 0 },
+                { rowid: 1, code: '45645645657', format: 'UPC', date: 49583044564456, favourite: 1 },
+                { rowid: 2, code: 'https://itsdatnguyen.github.io/utility/welcome', format: 'CODE128', date: 49583049564053, favourite: 1 },
+                { rowid: 3, code: 'https://www.youtube.com/watch?v=hY7m5jjJ9mM', format: 'CODE128', date: 4958304845653, favourite: 0 },
             ];
 
         } else {
-            this.appReadyService.isAppReady().subscribe((value) => {
-                this.barcodeReaderService.createBarcodeTable().then((value) => {
-                    this.barcodeReaderService.getAllBarcodes().then((results) => {
-                        this.updateBarcodes(results);
-                    });
-                });
-                this.barcodeReaderService.onBarcodeChange.subscribe((results) => {
-                    this.updateBarcodes(results);
-                });
+            this.appReadyService.isAppReady().subscribe(() => {
+                this.initializeList();
+                this.setupBarcodeChanges();
             });  
         }
     }
 
-    updateBarcodes(results: any): void {
-        let codes = [];
-        
-        for (let i = results.rows.length - 1; i >= 0; i--) {
-            let object = results.rows.item(i);
-            codes.push(object);
-        }
+    ionViewWillLeave() {
+        this.barcodes = [];
+    }
 
-        this.barcodes = codes;
+    initializeList(): Promise<any> {
+        if (this.config.onlyFavourites === true) {
+            return this.favouritesService.getAllFavouriteBarcodes()
+            .then((codes) => {
+                this.gettingData = false;
+                this.barcodes = codes;
+            });
+        } else {
+            return this.barcodeReaderService.getAllBarcodes()
+            .then((codes) => {
+                this.gettingData = false;
+                this.barcodes = codes;
+            });
+        }          
+    }
+
+    setupBarcodeChanges(): void {
+        if (this.config.onlyFavourites === true) {
+            this.favouritesService.onBarcodeChange.subscribe((codes) => {
+                this.barcodes = codes;
+            })
+        } else {
+            this.barcodeReaderService.onBarcodeChange.subscribe((codes) => {
+                this.barcodes = codes;
+            });
+        }
     }
 
     onRowTapped(code: CodeEntry) {

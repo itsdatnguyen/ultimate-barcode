@@ -8,4 +8,9 @@
 <ion-content padding>
     <button ion-button (click)="printDatabaseClicked()">Print Database</button>
     <button ion-button (click)="restartDatabaseClicked()">Restart Database</button>
+    <ion-item>
+        <ion-label floating>Table Schema</ion-label>
+        <ion-input type="text" [(ngModel)]="tableSchema"></ion-input>
+        <button padding item-right ion-button (click)="printTableSchema(tableSchema)">Print Table Schema</button>
+    </ion-item>
 </ion-content>

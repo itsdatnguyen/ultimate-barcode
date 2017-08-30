@@ -1,10 +1,21 @@
+import { VCardDetailOptionsPageModule } from './../pages/v-card-detail-options/v-card-detail-options.module';
+import { VCardDetailPageModule } from './../pages/v-card-detail/v-card-detail.module';
+import { SavedVCardsPageModule } from './../pages/saved-v-cards/saved-v-cards.module';
+import { CopyPasteService } from './../shared/copy-paste.service';
+import { QrViewerPageModule } from './../pages/qr-viewer/qr-viewer.module';
+import { QrTextViewerPageModule } from './../pages/qr-text-viewer/qr-text-viewer.module';
+import { VCardGeneratorOptionsPageModule } from './../pages/v-card-generator-options/v-card-generator-options.module';
 import { ErrorHandler, NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { DatePipe } from "@angular/common";
+import { ReactiveFormsModule } from "@angular/forms";
+import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
 import { IonicNativePluginModule } from "./ionic-native-plugin.module";
 
+import { VCardAttributeListPageModule } from './../pages/v-card-attribute-list/v-card-attribute-list.module';
+import { VCardGeneratorPageModule } from './../pages/v-card-generator/v-card-generator.module';
+import { FavouritesPageModule } from './../pages/favourites/favourites.module';
 import { BarcodeDetailOptionsPageModule } from './../pages/barcode-detail-options/barcode-detail-options.module';
 import { BarcodeGeneratorPageModule } from './../pages/barcode-generator/barcode-generator.module';
 import { QrCodeDetailOptionsPageModule } from './../pages/qr-code-detail-options/qr-code-detail-options.module';
@@ -19,19 +30,22 @@ import { IntroductionPageModule } from './../pages/introduction/introduction.mod
 
 import { TestPageModule } from './../pages/test/test.module';
 
-import { BarcodeParserService } from './../shared';
-import { BarcodeReaderService } from './../pages/barcode-reader/barcode-reader.service';
-
 import { MyApp } from './app.component';
 import { 
-    ImageSaverService, 
     AdService, 
+    AppReadyService,
+    BrowserService, 
+    BarcodeParserService,
+    BarcodeReaderService,
+    FavouritesService,
+    ImageSaverService, 
     IntroductionService, 
     SQLStorageService, 
-    UserSettingsService, 
     StatisticsService, 
-    BrowserService, 
-    AppReadyService 
+    UserSettingsService,
+    VCardGeneratorService, 
+    VCardParserService,
+    VCardStorageService
 } from "../shared/index";
 
 
@@ -47,8 +61,17 @@ export const AppPages = [
     QrCodeDetailPageModule,
     QrCodeDetailOptionsPageModule,
     QrCodeGeneratorPageModule,
+    FavouritesPageModule,
+    VCardGeneratorPageModule,
+    VCardAttributeListPageModule,
+    VCardGeneratorOptionsPageModule,
+    VCardDetailPageModule,
+    VCardDetailOptionsPageModule,
+    SavedVCardsPageModule,
+    QrTextViewerPageModule,
+    QrViewerPageModule,
 
-    //TestPageModule,
+    // TestPageModule,
 ];
 
 @NgModule({
@@ -57,6 +80,7 @@ export const AppPages = [
     ],
     imports: [
         BrowserModule,
+        ReactiveFormsModule,
         AppPages,
         IonicModule.forRoot(MyApp),
         IonicNativePluginModule,        
@@ -80,7 +104,11 @@ export const AppPages = [
         AppReadyService,
         AdService,
         ImageSaverService,
-        DatePipe,
+        FavouritesService,
+        VCardGeneratorService,
+        VCardParserService,
+        VCardStorageService,
+        CopyPasteService,
     ]
 })
 export class AppModule {}

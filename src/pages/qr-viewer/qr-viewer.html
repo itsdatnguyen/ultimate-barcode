@@ -1,0 +1,25 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>Qr Viewer</ion-title>
+        <ion-buttons start>
+            <button ion-button (click)="close()">Close</button>
+        </ion-buttons>
+        <ion-buttons end>      
+            <button ion-button (click)="onShareClicked()">
+                <ion-icon class="large-icon" name="share"></ion-icon>
+            </button>          
+        </ion-buttons>
+        <ion-buttons right>
+            <button ion-button (click)="downloadClicked()">
+                <ion-icon class="large-icon" name="download"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+    <div padding class="flex justify-center" *ngIf="qrViewer != null">
+        <qr-code [value]="qrViewer.qrCode.value" [size]="qrViewer.qrCode.size" #qrCodeElement></qr-code>
+    </div>
+</ion-content>

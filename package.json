@@ -8,7 +8,7 @@
         "clean": "ionic-app-scripts clean",
         "build": "ionic-app-scripts build",
         "build-android": "ionic cordova build android --aot --prod --release --minifyjs --minifycss --optimizejs",
-        "android-run-prod": "ionic cordova run android --prod --aot --minifyjs --minifycss --optimizejs",
+        "android-run-prod": "ionic cordova run android --aot  --prod --minifyjs --minifycss --optimizejs",
         "lint": "ionic-app-scripts lint",
         "ionic:build": "ionic-app-scripts build",
         "ionic:serve": "ionic-app-scripts serve"
@@ -29,6 +29,7 @@
         "@ionic-native/base64-to-gallery": "^4.1.0",
         "@ionic-native/browser-tab": "^4.1.0",
         "@ionic-native/clipboard": "^4.1.0",
+        "@ionic-native/contacts": "^4.2.0",
         "@ionic-native/core": "4.1.0",
         "@ionic-native/file-opener": "^4.1.0",
         "@ionic-native/social-sharing": "^4.1.0",
@@ -36,8 +37,9 @@
         "@ionic-native/sqlite": "^4.1.0",
         "@ionic-native/status-bar": "4.1.0",
         "@ionic/storage": "2.0.1",
+        "@types/lodash": "^4.14.74",
         "angular2-qrcode": "^2.0.1",
-        "cordova-admob-sdk": "^0.8.0",
+        "cordova-admob-sdk": "^0.9.0",
         "cordova-android": "^6.2.3",
         "cordova-base64-to-gallery": "^4.1.2",
         "cordova-clipboard": "^1.0.0",
@@ -47,6 +49,7 @@
         "cordova-plugin-browsertab": "^0.2.0",
         "cordova-plugin-compat": "^1.1.0",
         "cordova-plugin-console": "^1.0.5",
+        "cordova-plugin-contacts": "^2.3.1",
         "cordova-plugin-device": "^1.1.4",
         "cordova-plugin-dialogs": "^1.3.3",
         "cordova-plugin-file-opener2": "^2.0.19",
@@ -55,23 +58,26 @@
         "cordova-plugin-splashscreen": "^4.0.3",
         "cordova-plugin-statusbar": "^2.2.2",
         "cordova-plugin-whitelist": "^1.3.1",
-        "cordova-plugin-x-socialsharing": "^5.1.8",
+        "cordova-plugin-x-socialsharing": "^5.2.0",
         "cordova-promise-polyfill": "0.0.2",
         "cordova-sqlite-storage": "^2.0.4",
         "es6-promise-plugin": "^4.1.0",
         "ionic-angular": "3.6.0",
         "ionic-plugin-keyboard": "^2.2.1",
         "ionicons": "3.0.0",
+        "lodash": "^4.17.4",
         "ngx-barcode": "^0.2.4",
         "phonegap-plugin-barcodescanner": "^6.0.8",
         "rxjs": "5.4.3",
         "sw-toolbox": "3.6.0",
+        "typescript": "^2.4.4",
+        "vcardparser": "^1.0.3",
+        "vcards-js": "^2.8.0",
         "zone.js": "0.8.12"
     },
     "devDependencies": {
-        "@ionic/app-scripts": "2.1.3",
-        "ionic": "^3.9.2",
-        "typescript": "^2.4.4"
+        "@ionic/app-scripts": "2.1.4",
+        "ionic": "^3.9.2"
     },
     "description": "An Ionic project",
     "cordova": {
@@ -91,7 +97,8 @@
             "cordova-plugin-apprate": {},
             "cordova-plugin-x-socialsharing": {},
             "cordova-plugin-file-opener2": {},
-            "cordova-plugin-android-permissions": {}
+            "cordova-plugin-android-permissions": {},
+            "cordova-plugin-contacts": {}
         },
         "platforms": [
             "android"

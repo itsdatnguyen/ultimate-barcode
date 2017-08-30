@@ -1,4 +1,4 @@
-import { CodeEntry } from './../pages/barcode-reader/barcode-reader.service';
+import { CodeEntry } from './barcode-reader.service';
 import { Injectable } from '@angular/core';
 
 @Injectable()

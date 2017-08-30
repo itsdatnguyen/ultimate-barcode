@@ -1,3 +1,7 @@
+import { SavedVCardsPage } from './../pages/saved-v-cards/saved-v-cards';
+import { BarcodeReaderService } from './../shared/barcode-reader.service';
+import { VCardGeneratorPage } from './../pages/v-card-generator/v-card-generator';
+import { FavouritesPage } from './../pages/favourites/favourites';
 import { TestPage } from './../pages/test/test';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { Component, ViewChild } from '@angular/core';
@@ -25,9 +29,12 @@ export class MyApp {
     rootPage: any = BarcodeReaderPage;
 
     pages: Array<{title: string, component: any}> = [
-        { title: 'QR Generator', component: QrCodeGeneratorPage },
+        { title: 'Favourites', component: FavouritesPage },
         { title: 'Barcode Generator', component: BarcodeGeneratorPage },
-        //{ title: 'Test Page', component: TestPage },        
+        { title: 'QR Generator', component: QrCodeGeneratorPage },
+        // { title: 'vCard Generator', component: VCardGeneratorPage },
+        // { title: 'Saved vCards', component: SavedVCardsPage },
+        // { title: 'Test Page', component: TestPage },        
     ];
 
     constructor(
@@ -36,10 +43,11 @@ export class MyApp {
         public splashScreen: SplashScreen,
         private introductionService: IntroductionService,
         private sqlStorageService: SQLStorageService,
+        private barcodeReaderService: BarcodeReaderService,
         private appReadyService: AppReadyService,
         private adService: AdService,
         private appRate: AppRate,
-        private social: SocialSharing
+        private social: SocialSharing,
     ) {
         this.initializeApp();
     }
@@ -61,9 +69,15 @@ export class MyApp {
             this.adService.prepareInterstitialAd();
                         
             this.sqlStorageService.initializeDatabase()
+            .then((value) => {      
+                let barcodePromise = this.barcodeReaderService.createBarcodeTable();
+                let qrPromise = this.barcodeReaderService.createQRCodeTable();          
+                this.seenIntroduction();
+
+                return Promise.all([barcodePromise, qrPromise]);
+            })
             .then((value) => {
                 this.appReadyService.enableAppReady();
-                this.seenIntroduction();
             })
             .catch((error) => {
                 this.seenIntroduction();

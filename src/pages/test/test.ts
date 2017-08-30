@@ -1,6 +1,6 @@
 import { SQLStorageService } from './../../shared/sql-storage.service';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage } from 'ionic-angular';
 
 
 @IonicPage()
@@ -27,6 +27,14 @@ export class TestPage {
         this.storage.restartDatabase()
         .then((value) => {
             console.log(value);
+        });
+    }
+
+    printTableSchema(tableSchema: string) {
+        this.storage.SQLiteObject.executeSql(`PRAGMA table_info(${tableSchema})`, [])
+        .then((value) => {
+            let data = value.rows.item(0); 
+            console.log(data);
         });
     }
 }

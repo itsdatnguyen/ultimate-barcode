@@ -1,0 +1,32 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>Saved vCards</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-row padding-horizontal>
+            <ion-row col-8 class="qr-code-header">
+                <h2>vCard</h2>
+            </ion-row>
+            <ion-row col-4>
+                <h2>Date</h2>
+            </ion-row>
+        </ion-row>
+        <div class="flex justify-center" *ngIf="gettingData === true">
+            <ion-spinner></ion-spinner>
+        </div>
+        <p text-center *ngIf="vCards.length === 0 && gettingData === false">No Qr Codes scanned</p>
+        <ion-list>
+            <ion-item tappable *ngFor="let card of vCards" (click)="onRowClicked(code)">  
+                <ion-row>
+                    <ion-col col-8 class="row-scroll-x">
+                        <p></p>
+                    </ion-col>
+                    <ion-col col-4 class="row-scroll-x">
+                        <p>{{ card.date | date }}
+                    </ion-col>
+                </ion-row>             
+            </ion-item>
+        </ion-list>
+</ion-content>

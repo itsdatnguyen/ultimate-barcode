@@ -1,0 +1,19 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-buttons start>
+            <button ion-button (click)="close()">Close</button>
+        </ion-buttons>
+        <ion-title>Attribute List</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-list [virtualScroll]="list"
+        [approxItemHeight]="'55px'">
+    <ion-item tappable *virtualItem="let attribute" (click)="onRowTapped(attribute)">  
+        <ion-row>
+            {{ attribute.displayName }}
+        </ion-row>             
+    </ion-item>
+</ion-list>
+</ion-content>

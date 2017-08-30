@@ -15,6 +15,10 @@
 </ion-header>
 
 <ion-tabs>
-    <ion-tab tabIcon="barcode" tabTitle="Barcode History" [root]="barcodeHistoryRoot"></ion-tab>
-    <ion-tab tabIcon="qr-scanner" tabTitle="Qr Code History" [root]="qrCodeHistoryRoot"></ion-tab>
+    <ion-tab tabIcon="barcode" tabTitle="Barcode History" 
+        [root]="barcodeHistoryRoot"
+        [rootParams]="listConfig"></ion-tab>
+    <ion-tab tabIcon="qr-scanner" tabTitle="Qr Code History" 
+        [root]="qrCodeHistoryRoot"
+        [rootParams]="listConfig"></ion-tab>
 </ion-tabs>

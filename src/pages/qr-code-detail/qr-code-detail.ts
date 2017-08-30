@@ -1,12 +1,12 @@
+import { BarcodeReaderService } from './../../shared/barcode-reader.service';
+import { FavouritesService } from './../../shared/favourites.service';
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavParams, AlertController, ViewController, ToastController, PopoverController } from 'ionic-angular';
+import { IonicPage, NavParams, ViewController, ToastController, PopoverController, NavController, AlertController } from 'ionic-angular';
 
 import { SocialSharing } from '@ionic-native/social-sharing';
-import { Clipboard } from '@ionic-native/clipboard';
 
-import { BrowserService, AdService, ImageSaverService } from './../../shared';
+import { BrowserService, AdService, ImageSaverService, CodeEntry, CopyPasteService } from './../../shared';
 import { QrCodeDetailOptionsPage, QrCodeDetailOption } from './../qr-code-detail-options/qr-code-detail-options';
-import { CodeEntry } from './../barcode-reader/barcode-reader.service';
 
 @IonicPage()
 @Component({
@@ -20,15 +20,18 @@ export class QrCodeDetailPage {
     qrCode: CodeEntry = null;
 
     constructor(
-        public navParams: NavParams,
-        private imageSaverService: ImageSaverService,
-        private viewController: ViewController,
-        private toastController: ToastController,
-        private alertController: AlertController,
-        private popoverController: PopoverController,
+        private navParams: NavParams,
+        private navController: NavController,
+        private imageSaver: ImageSaverService,
+        private favourites: FavouritesService,
+        private barcodeReader: BarcodeReaderService,
+        private view: ViewController,
+        private toast: ToastController,
+        private popover: PopoverController,
+        private alert: AlertController,
         private social: SocialSharing,
         private browser: BrowserService,
-        private clipboard: Clipboard,
+        private copyPaste: CopyPasteService,
         private adService: AdService,
         ) {
     }
@@ -38,7 +41,45 @@ export class QrCodeDetailPage {
     }
 
     close() {
-        this.viewController.dismiss();
+        this.view.dismiss();
+    }
+
+    onFavouriteClicked() {
+        if (this.qrCode.favourite === 1) {
+            this.qrCode.favourite = 0;
+            
+            this.favourites.setQrCodeFavourite(this.qrCode.rowid, 0)
+            .then((value) => {
+                let removedFavouriteToast = this.toast.create({
+                    message: 'Removed from favourites',
+                    duration: 2000
+                });
+                return removedFavouriteToast.present();
+            });
+        } else {
+            this.qrCode.favourite = 1;
+
+            this.favourites.setQrCodeFavourite(this.qrCode.rowid, 1)
+            .then((value) => {
+                let addedFavouriteToast = this.toast.create({
+                    message: 'Added to favourites',
+                    duration: 2000
+                });
+                return addedFavouriteToast.present();
+            });
+        }
+    }
+
+    getButtonColor(): string {
+        if (this.isFavourite() === true) {
+            return 'primary';
+        } else {
+            return 'light';
+        }
+    }
+
+    isFavourite(): boolean {     
+        return this.qrCode.favourite === 1;
     }
 
     shareClicked($event) {
@@ -49,7 +90,7 @@ export class QrCodeDetailPage {
     }
 
     moreClicked($event) {
-        let morePopover = this.popoverController.create(QrCodeDetailOptionsPage, {
+        let morePopover = this.popover.create(QrCodeDetailOptionsPage, {
             code: this.qrCode.code
         });
 
@@ -61,25 +102,47 @@ export class QrCodeDetailPage {
                         break;
 
                     case QrCodeDetailOption.Open:
-                        this.browser.openInBrowser(this.qrCode.code)
-                        .then((value) => {
-                            this.adService.showInterstitialAd();
-                        });
+                        this.browser.openInBrowser(this.qrCode.code);
                         break;
 
                     case QrCodeDetailOption.OpenInBrowser: 
-                        this.browser.openInNativeBrowser(this.qrCode.code)
-                        .then((value) => {
-                            this.adService.showInterstitialAd();
-                        });
+                        this.browser.openInNativeBrowser(this.qrCode.code);
                         break;
 
                     case QrCodeDetailOption.Search:
-                        this.browser.openGoogleSearch(this.qrCode.code)
-                        .then((value) => {
-                            this.adService.showInterstitialAd();
-                        });
+                        this.browser.openGoogleSearch(this.qrCode.code);
                         break;
+
+                    case QrCodeDetailOption.Delete:
+                        let deleteAlert = this.alert.create({
+                            title: 'Delete',
+                            message: 'Are you sure you want to delete this Qr Code?',
+                            buttons: [
+                                {
+                                    text: 'Cancel',
+                                    role: 'cancel',
+                                }, 
+                                {
+                                    text: 'Delete',
+                                    role: 'delete',
+                                    handler: () => {
+                                        this.barcodeReader.deleteQrCode(this.qrCode.rowid)
+                                        .then((value) => {
+                                            if (this.qrCode.favourite === 1) {
+                                                this.favourites.favouriteQrCodeChangeEmit();
+                                            }
+                                        });
+
+                                        this.navController.pop();
+                                    }
+                                }
+                            ]
+                        });
+                        
+                        deleteAlert.present();
+                        break;
+
+                    default:
                 }
             }
         });
@@ -90,34 +153,13 @@ export class QrCodeDetailPage {
     }
 
     codePressed($event) {
-        let copyAlert = this.alertController.create({
-            title: 'Copy',
-            message: 'Do you want to copy this text?',
-            buttons: [
-                {
-                    text: 'No'
-                },
-                {
-                    text: 'Yes',
-                    handler: () => {
-                        this.clipboard.copy(this.qrCode.code).then((value) => {
-                            let copySuccessToast = this.toastController.create({
-                                message: 'Text Copied!',
-                                duration: 2000
-                            });
-
-                            copySuccessToast.present();
-                        });
-                    }
-                }
-            ]
+        this.copyPaste.copy(this.qrCode.code, {
+            askUser: true
         });
-
-        copyAlert.present();
     }
 
     saveQRCodeAsImage(): Promise<any> {
-        return this.imageSaverService.saveBase64ToGallery({
+        return this.imageSaver.saveBase64ToGallery({
             base64: this.getQrImage().src,
             filePrefix: 'QrCode_',
             description: 'Qr Code'

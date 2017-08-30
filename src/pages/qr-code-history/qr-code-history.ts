@@ -1,9 +1,9 @@
+import { FavouritesService } from './../../shared/favourites.service';
 import { Component } from '@angular/core';
-import { IonicPage, ModalController, Platform } from 'ionic-angular';
+import { IonicPage, ModalController, Platform, NavParams } from 'ionic-angular';
 
 import { QrCodeDetailPage } from './../qr-code-detail/qr-code-detail';
-import { BarcodeReaderService, CodeEntry } from './../barcode-reader/barcode-reader.service';
-import { AppReadyService } from "../../shared/index";
+import { AppReadyService, BarcodeReaderService, CodeEntry, CodeListOptions } from "../../shared/index";
 
 @IonicPage()
 @Component({
@@ -13,34 +13,67 @@ import { AppReadyService } from "../../shared/index";
 export class QrCodeHistoryPage {
 
     qrCodes: CodeEntry[] = [];
+    config: CodeListOptions;    
+    gettingData: boolean = true;
 
     constructor(
         public modalController: ModalController,
+        private navParams: NavParams,
         private platform: Platform,
         private barcodeReaderService: BarcodeReaderService,
-        private appReadyService: AppReadyService
+        private appReadyService: AppReadyService,
+        private favouritesService: FavouritesService,
     ) {
     }
 
     ionViewWillEnter() {
-        if (this.platform.is('core')) {
+        this.config = this.navParams.data;
+        this.gettingData = true;
+
+        if (this.platform.is('core') || this.platform.is('mobileweb')) {
             this.qrCodes = [
-                { code: 'https://itsdatnguyen.github.io/utility/qr-code', format: 'QR_CODE', date: 3453456454534},
-                { code: 'This is pretty cool', format: 'QR_CODE', date: 45645645645},
-                { code: 'https://www.youtube.com/watch?v=hY7m5jjJ9mM', format: 'QR_CODE', date: 235234564235},
-                { code: 'https://www.instagram.com/angievarona/?hl=en', format: 'QR_CODE', date: 6456456456564},
+                { rowid: 0, code: 'https://itsdatnguyen.github.io/utility/qr-code', format: 'QR_CODE', date: 3453456454534, favourite: 1 },
+                { rowid: 1, code: 'This is pretty cool', format: 'QR_CODE', date: 45645645645, favourite: 0 },
+                { rowid: 2, code: 'https://www.youtube.com/watch?v=hY7m5jjJ9mM', format: 'QR_CODE', date: 235234564235, favourite: 0 },
+                { rowid: 3, code: 'https://www.instagram.com/angievarona/?hl=en', format: 'QR_CODE', date: 6456456456564, favourite: 1 },
             ];
         } else {         
-            this.appReadyService.isAppReady().subscribe((value) => {
-                this.barcodeReaderService.createQRCodeTable().then((value) => {
-                    this.barcodeReaderService.getAllQRCodes().then((results) => {   
-                        this.updateQrCodes(results);
-                    });        
-                });
-                
-                this.barcodeReaderService.onQrCodeChange.subscribe((results) => {
-                    this.updateQrCodes(results);
-                });
+            this.appReadyService.isAppReady()
+            .subscribe((value) => {
+                this.initializeList();
+                this.setupQrChanges();
+            });
+        }
+    }
+
+    ionViewWillLeave() {
+        this.qrCodes = [];
+    }
+
+    initializeList(): Promise<any> {
+        if (this.config.onlyFavourites === true) {
+            return this.favouritesService.getAllFavouriteQrCodes()
+            .then((codes) => {
+                this.gettingData = false;
+                this.qrCodes = codes;
+            })
+        } else {
+            return this.barcodeReaderService.getAllQRCodes()
+            .then((codes) => {
+                this.gettingData = false;
+                this.qrCodes = codes;
+            });
+        }          
+    }
+
+    setupQrChanges(): void {
+        if (this.config.onlyFavourites === true) {
+            this.favouritesService.onQrCodeChange.subscribe((codes) => {                
+                this.qrCodes = codes;
+            })
+        } else {
+            this.barcodeReaderService.onQrCodeChange.subscribe((codes) => {
+                this.qrCodes = codes;
             });
         }
     }
@@ -48,15 +81,5 @@ export class QrCodeHistoryPage {
     onRowClicked(code: CodeEntry) {
         let detailModal = this.modalController.create(QrCodeDetailPage, code);
         detailModal.present();
-    }
-
-    updateQrCodes(results: any): void {                 
-        let codes = [];
-        for (let i = results.rows.length - 1; i >= 0; i--) {
-            let object = results.rows.item(i);
-            codes.push(object);
-        }
-
-        this.qrCodes = codes;
     }
 }

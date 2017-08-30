@@ -5,7 +5,8 @@ export enum QrCodeDetailOption {
     Download,
     Open,
     OpenInBrowser,
-    Search
+    Search,
+    Delete
 }
 
 export interface QrCodeDetailOptionsInfo {
@@ -27,7 +28,8 @@ export class QrCodeDetailOptionsPage {
         { displayName: 'Download', icon: 'download', option: QrCodeDetailOption.Download },
         { displayName: 'Open', icon: 'open', option: QrCodeDetailOption.Open },
         { displayName: 'Open In Browser', icon: 'browsers', option: QrCodeDetailOption.OpenInBrowser },
-        { displayName: 'Search', icon: 'search', option: QrCodeDetailOption.Search }
+        { displayName: 'Search', icon: 'search', option: QrCodeDetailOption.Search },
+        { displayName: 'Delete', icon: 'trash', option: QrCodeDetailOption.Delete },
     ];
 
     constructor(

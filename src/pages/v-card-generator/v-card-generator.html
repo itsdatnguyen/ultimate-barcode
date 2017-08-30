@@ -1,0 +1,37 @@
+<ion-header>
+    <ion-navbar color="primary">    
+        <ion-title>vCard Generator</ion-title>
+        <ion-buttons right>
+            <button ion-button (click)="moreClicked($event)">
+                <ion-icon class="large-icon" name="more"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-fab padding bottom right>
+        <button ion-fab (click)="onAddAttributeClicked($event)">
+            <ion-icon name="add"></ion-icon>
+        </button>
+    </ion-fab>
+    <form>
+        <ion-card>
+            <ion-card-content>
+                <p *ngIf="getFormControls().length === 0 && gettingData === false">
+                    Click on the <ion-icon name="add"></ion-icon> icon in the bottom right to add some attributes to your vCard.
+                </p>
+                <div class="flex justify-center" *ngIf="gettingData === true">
+                    <ion-spinner></ion-spinner>
+                </div>
+                <ion-item *ngFor="let formControl of getFormControls()">
+                    <ion-label floating>{{ formControl.value.displayName }}</ion-label>
+                    <ion-input color="primary" type="text" [name]="formControl.value.selector" [(ngModel)]="vCard[formControl.value.selector]"></ion-input>
+                    <button padding ion-button item-end autofocus tabindex="-1" (click)="onDeleteFormControlClicked(formControl.value)">
+                        <ion-icon class="large-icon" name="trash"></ion-icon>
+                    </button>
+                </ion-item>
+            </ion-card-content>
+        </ion-card>
+    </form>
+</ion-content>

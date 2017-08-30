@@ -1,0 +1,21 @@
+
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>Qr Text Viewer</ion-title>
+        <ion-buttons start>
+            <button ion-button (click)="close()">Close</button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+    <ion-card>
+        <ion-card-header>
+            <h1>Qr Code Text</h1>
+        </ion-card-header>
+        <ion-card-content>
+            <p (press)="textPressed($event)">{{ text }}</p>
+        </ion-card-content>
+    </ion-card>
+</ion-content>

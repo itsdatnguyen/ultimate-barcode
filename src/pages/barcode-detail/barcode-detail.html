@@ -18,11 +18,17 @@
 </ion-header>
 
 <ion-content padding>
-    <ion-card>
-        <ion-card-header>
-            <h1 class="card-title">Details</h1>
+    <ion-card *ngIf="barcode !== null">
+        <ion-card-header class="barcode-detail-header">
+            <ion-item>
+                <h1 class="card-title" item-left>Details</h1>
+                <button padding ion-button icon-end item-right [color]="getButtonColor()" (click)="onFavouriteClicked()">
+                    <span *ngIf="isFavourite()">Favourite</span>
+                    <ion-icon name="star"></ion-icon>
+                </button>
+            </ion-item>
         </ion-card-header>
-        <ion-card-content padding *ngIf="barcode !== null">
+        <ion-card-content padding>
             <div padding-bottom (press)="codePressed($event)">
                 <h2 class="card-subtitle">Content</h2>
                 <p class="card-content">{{ barcode.code }}</p>

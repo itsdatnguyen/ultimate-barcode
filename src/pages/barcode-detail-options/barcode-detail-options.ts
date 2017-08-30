@@ -7,6 +7,7 @@ export enum BarcodeDetailOptions {
     OpenInBrowser,
     SearchUpcIndex,
     SearchGoogle,
+    Delete,
 }
 
 export interface BarcodeDetailOptionInfo {
@@ -27,7 +28,8 @@ export class BarcodeDetailOptionsPage {
         { displayName: 'Open', icon: 'open', option: BarcodeDetailOptions.Open },
         { displayName: 'Open In Browser', icon: 'browsers', option: BarcodeDetailOptions.OpenInBrowser },
         { displayName: 'Search Google', icon: 'search', option: BarcodeDetailOptions.SearchGoogle },
-        { displayName: 'Search UPC Index', icon: 'search', option: BarcodeDetailOptions.SearchUpcIndex }
+        { displayName: 'Search UPC Index', icon: 'search', option: BarcodeDetailOptions.SearchUpcIndex },
+        { displayName: 'Delete', icon: 'trash', option: BarcodeDetailOptions.Delete },
     ];
 
     constructor(private viewController: ViewController) {
